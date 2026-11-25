@@ -1,0 +1,64 @@
+.v5 {
+  --satin: #ffffff;
+  --satin-2: #f6f3ee;
+  --velvet: #0f0d0c;
+  --velvet-2: #1a1715;
+  --ink: #15120f;
+  --muted: #625a50;
+  --gold: #d1bc8d;
+  --gold-hi: #f3e6c4;
+  --gold-lo: #9a7a3e;
+  --gold-text: #82652b;
+  font-family: var(--font-v5-text), system-ui, sans-serif;
+  background: var(--satin);
+  color: var(--ink);
+  min-height: 100dvh;
+  font-size: 1.0625rem;
+}
+.v5 .display {
+  font-family: var(--font-v5-display), serif;
+}
+.v5 ::selection {
+  background: var(--gold);
+  color: var(--velvet);
+}
+.v5 :focus-visible {
+  outline: 1px solid var(--gold);
+  outline-offset: 4px;
+}
+/* Dorure à chaud : reflet qui balaie la feuille d'or */
+.v5 .foil {
+  background: linear-gradient(
+    105deg,
+    var(--gold-lo) 0%,
+    var(--gold) 30%,
+    var(--gold-hi) 45%,
+    var(--gold) 55%,
+    var(--gold-lo) 80%,
+    var(--gold) 100%
+  );
+  background-size: 250% 100%;
+  animation: v5-sheen 7s ease-in-out infinite;
+}
+@keyframes v5-sheen {
+  0%,
+  100% {
+    background-position: 100% 0;
+  }
+  50% {
+    background-position: 0 0;
+  }
+}
+.v5 .velvet {
+  background-color: var(--velvet);
+  background-image: radial-gradient(
+    120% 80% at 30% 0%,
+    rgb(255 255 255 / 0.06),
+    transparent 60%
+  );
+}
+.v5 .foil-text {
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}

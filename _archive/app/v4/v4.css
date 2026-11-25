@@ -1,0 +1,54 @@
+.v4 {
+  --paper: #ffffff;
+  --veil: #f7f5f1;
+  --ink: #141210;
+  --muted: #5d574e;
+  --gold: #d1bc8d;
+  --gold-deep: #85672c;
+  --hair: #e4d9c1;
+  font-family: var(--font-v4-text), Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100dvh;
+  font-size: 1.0625rem;
+}
+.v4 .caps {
+  font-family: var(--font-v4-caps), serif;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+.v4 ::selection {
+  background: var(--gold);
+  color: var(--ink);
+}
+.v4 :focus-visible {
+  outline: 1px solid var(--gold-deep);
+  outline-offset: 4px;
+}
+.v4 .leader {
+  flex: 1;
+  margin-bottom: 0.3em;
+  border-bottom: 1px dotted var(--gold);
+}
+@keyframes v4-reveal {
+  from {
+    clip-path: inset(0 50% 0 50%);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+.v4 .reveal {
+  animation: v4-reveal 1.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes v4-rule {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.v4 .rule {
+  animation: v4-rule 1.2s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}

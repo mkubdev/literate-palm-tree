@@ -1,0 +1,68 @@
+.v3 {
+  --paper: #fbfbf7;
+  --ink: #0b0b0b;
+  --pink: #ff2e93;
+  --pink-deep: #c4005f;
+  --acid: #c8ff1a;
+  --muted: #4b4b4b;
+  font-family: var(--font-v3-text), system-ui, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100dvh;
+}
+.v3 .mast {
+  font-family: var(--font-v3-mast), sans-serif;
+}
+.v3 .misreg {
+  text-shadow:
+    -3px 2px 0 var(--pink),
+    2px -1px 0 var(--acid);
+}
+.v3 .misreg-sm {
+  text-shadow: -2px 1px 0 var(--pink);
+}
+.v3 ::selection {
+  background: var(--acid);
+  color: var(--ink);
+}
+.v3 :focus-visible {
+  outline: 3px solid var(--pink);
+  outline-offset: 3px;
+}
+.v3 .halftone {
+  background-color: var(--ink);
+  background-image: radial-gradient(
+    circle at center,
+    var(--pink) 0 1.6px,
+    transparent 2.2px
+  );
+  background-size: 9px 9px;
+}
+.v3 .coverline {
+  transition:
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.2s,
+    color 0.2s;
+}
+.v3 .coverline:hover,
+.v3 .coverline:focus-visible {
+  background: var(--acid);
+  color: var(--ink);
+  transform: rotate(0deg) scale(1.04) !important;
+}
+@keyframes v3-shift {
+  0%,
+  100% {
+    text-shadow:
+      -3px 2px 0 var(--pink),
+      2px -1px 0 var(--acid);
+  }
+  50% {
+    text-shadow:
+      3px -2px 0 var(--pink),
+      -2px 2px 0 var(--acid);
+  }
+}
+.v3 .mast-anim {
+  animation: v3-shift 5s ease-in-out infinite;
+}

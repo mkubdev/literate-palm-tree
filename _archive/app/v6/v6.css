@@ -1,0 +1,63 @@
+.v6 {
+  --paper: #ffffff;
+  --mist: #f8f6f2;
+  --ink: #16130f;
+  --muted: #5e574d;
+  --gold: #d1bc8d;
+  --gold-text: #82652b;
+  font-family: var(--font-v6-text), system-ui, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100dvh;
+  font-size: 1.0625rem;
+}
+.v6 .deco {
+  font-family: var(--font-v6-deco), serif;
+}
+.v6 ::selection {
+  background: var(--gold);
+  color: var(--ink);
+}
+.v6 :focus-visible {
+  outline: 1px solid var(--gold-text);
+  outline-offset: 4px;
+}
+.v6 .arch {
+  border-radius: 999px 999px 0 0;
+}
+/* Cadre de miroir : double filet doré */
+.v6 .frame {
+  border: 1px solid var(--gold);
+  outline: 1px solid var(--gold);
+  outline-offset: 6px;
+}
+/* Reflet qui traverse le miroir */
+.v6 .glint {
+  position: relative;
+  overflow: hidden;
+}
+.v6 .glint::after {
+  content: "";
+  position: absolute;
+  inset: -20% -60%;
+  background: linear-gradient(
+    115deg,
+    transparent 42%,
+    rgb(255 255 255 / 0.45) 50%,
+    transparent 58%
+  );
+  transform: translateX(-60%);
+  animation: v6-glint 1.8s 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  pointer-events: none;
+}
+.v6 .glint:hover::after {
+  animation: v6-glint 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes v6-glint {
+  from {
+    transform: translateX(-60%);
+  }
+  to {
+    transform: translateX(60%);
+  }
+}
