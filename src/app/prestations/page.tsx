@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   description:
     "Tarifs du salon Simon Bouvatier : coupe, brushing, coloration, mèches, lissage brésilien, mariage, homme et enfant. Réservation en ligne 24h/24.",
   ...pageMeta(
-    "/services",
+    "/prestations",
     "Carte des services · Simon Bouvatier, coiffeur à Lyon 6e",
     "Tarifs du salon Simon Bouvatier : coupe, brushing, coloration, mèches, lissage brésilien, mariage, homme et enfant. Réservation en ligne 24h/24.",
     "services",
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 export default function Services() {
   return (
     <>
-      <SiteHeader current="/services" />
+      <SiteHeader current="/prestations" />
       <main>
         <PageIntro title="Carte des services">
           <p>

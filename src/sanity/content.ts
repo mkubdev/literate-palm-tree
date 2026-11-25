@@ -1,6 +1,7 @@
 import "server-only";
 import {
   home as localHome,
+  simonPage as localSimon,
   photos as localPhotos,
   services as localServices,
   type ServiceCategory,
@@ -157,5 +158,35 @@ export async function getHome(): Promise<Home> {
         : localHome.rating,
     reviews: data?.reviews?.length ? data.reviews : localHome.reviews,
     closing: text(data?.closing, localHome.closing),
+  };
+}
+
+/** Page /simon, document unique « Page Simon » ; la photo retombe sur l'ancienne « Photos du site » */
+export async function getSimon() {
+  const [data, photos] = await Promise.all([
+    query<{
+      title?: string;
+      role?: string;
+      lead?: string;
+      bio?: string[];
+      cta?: string;
+      promisesTitle?: string;
+      photo?: SanityImage;
+    }>(
+      `*[_id == "simonPage"][0]{ title, role, lead, bio, cta, promisesTitle, photo${IMAGE} }`,
+    ),
+    getPhotos(),
+  ]);
+  const text = (v: string | undefined, fallback: string) =>
+    v?.trim() || fallback;
+  const bio = data?.bio?.map((p) => p.trim()).filter(Boolean);
+  return {
+    title: text(data?.title, localSimon.title),
+    role: text(data?.role, localSimon.role),
+    lead: text(data?.lead, localSimon.lead),
+    bio: bio?.length ? bio : localSimon.bio,
+    cta: text(data?.cta, localSimon.cta),
+    promisesTitle: text(data?.promisesTitle, localSimon.promisesTitle),
+    photo: toPhoto(data?.photo, photos.simon),
   };
 }

@@ -4,7 +4,7 @@
 
 ## Fait
 
-- Site à la racine, mêmes adresses que l'ancien site Wavy pour garder les liens Google : `/`, `/services`, `/team`, `/access-contact`, `/photos`, plus `/mentions-legales`.
+- Site à la racine, adresses en français : `/`, `/prestations`, `/simon`, `/photos`, `/contact`, `/mentions-legales`. Les adresses de l'ancien site Wavy (`/services`, `/team`, `/access-contact`) redirigent définitivement (308) vers les nouvelles, pour garder le référencement.
 - Carte des services complète (46 prestations, reprises de Planity, qui fait foi pour les prix).
 - Réservation : tous les boutons ouvrent la page Planity du salon dans un nouvel onglet.
 - Contact : plan OpenStreetMap (sans cookie), horaires avec statut ouvert/fermé en direct.
@@ -42,7 +42,7 @@
 ## Plus tard
 
 - [ ] **Studio en ligne** : `cd studio && npx sanity deploy` (adresse prévue : simon-bouvatier.sanity.studio), puis inviter Simon comme Editor sur sanity.io/manage.
-- [ ] **Sanity, étape 2** : horaires, fermetures exceptionnelles, avis, textes des autres pages (tous les textes de l’accueil sont déjà modifiables). Les données sont dans `src/content/salon.ts`.
+- [ ] **Sanity, étape 2** : horaires, fermetures exceptionnelles, avis, textes des autres pages (accueil et page Simon déjà modifiables). Les données sont dans `src/content/salon.ts`.
 - [ ] Mise à jour instantanée (au lieu de 60 s) : webhook Sanity vers une route `/api/revalidate` qui appelle `revalidateTag("sanity")`.
 - [ ] **Fermetures exceptionnelles** : bandeau « Fermé du … au … » ; sans ça le statut « Ouvert · ferme à 19h » est faux pendant les vacances.
 - [ ] **Instagram** : flux Behold. Envoyer à Simon le lien d'autorisation Behold (son compte doit être professionnel), puis renseigner `INSTAGRAM_FEED_URL`. Le code est prêt (`src/lib/instagram.ts`).

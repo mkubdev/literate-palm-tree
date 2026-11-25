@@ -1,6 +1,7 @@
 import { HomeIcon } from "@sanity/icons/Home";
 import { ImagesIcon } from "@sanity/icons/Images";
 import { ListIcon } from "@sanity/icons/List";
+import { UserIcon } from "@sanity/icons/User";
 import type { StructureResolver } from "sanity/structure";
 
 /** Menu de Simon : la carte des prestations, puis les photos (document unique) */
@@ -16,6 +17,15 @@ export const structure: StructureResolver = (S) =>
             .schemaType("homePage")
             .documentId("homePage")
             .title("Page d’accueil"),
+        ),
+      S.listItem()
+        .title("Page Simon")
+        .icon(UserIcon)
+        .child(
+          S.document()
+            .schemaType("simonPage")
+            .documentId("simonPage")
+            .title("Page Simon"),
         ),
       S.listItem()
         .title("Carte des prestations")

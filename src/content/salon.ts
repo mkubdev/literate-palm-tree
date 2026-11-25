@@ -521,3 +521,13 @@ export const home = {
   })),
   closing: "À bientôt rue Pierre Corneille.",
 };
+
+// Page /simon (secours ; la référence est le document « Page Simon » de Sanity)
+export const simonPage = {
+  title: "Simon",
+  role: "Coiffeur · Coloriste · Visagiste",
+  lead: bio[0],
+  bio: bio.slice(1),
+  cta: "Prendre rendez-vous avec Simon",
+  promisesTitle: "Ses engagements",
+};

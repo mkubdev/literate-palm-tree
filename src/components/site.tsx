@@ -13,10 +13,10 @@ export const booking = {
 
 /** Mêmes adresses que l'ancien site, pour garder les liens Google */
 export const pages = [
-  { href: "/services", label: "Prestations" },
+  { href: "/prestations", label: "Prestations" },
   { href: "/photos", label: "Photos" },
-  { href: "/team", label: "Simon" },
-  { href: "/access-contact", label: "Contact" },
+  { href: "/simon", label: "Simon" },
+  { href: "/contact", label: "Contact" },
 ] as const;
 
 /** Typographie française : espaces insécables fines et apostrophes courbes */
@@ -305,7 +305,7 @@ export async function PriceSummary({ className = "" }: { className?: string }) {
         {services.map((c) => (
           <li key={c.id} className="border-b border-(--line)">
             <a
-              href={`/services#${c.id}`}
+              href={`/prestations#${c.id}`}
               className="flex items-baseline justify-between gap-6 py-5"
             >
               <span className="display text-2xl">{c.name}</span>
@@ -321,7 +321,7 @@ export async function PriceSummary({ className = "" }: { className?: string }) {
           </li>
         ))}
       </ul>
-      <a href="/services" className="btn btn-ghost mt-10">
+      <a href="/prestations" className="btn btn-ghost mt-10">
         Voir la carte complète{" "}
         <ArrowRight className="size-4" strokeWidth={1.25} />
       </a>

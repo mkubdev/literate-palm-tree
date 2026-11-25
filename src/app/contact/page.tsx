@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description:
     "Salon Simon Bouvatier, 75 rue Pierre Corneille, 69006 Lyon, entre les métros Cordeliers et Part-Dieu. Ouvert du mardi au samedi, 9h–19h. 04 78 41 42 99.",
   ...pageMeta(
-    "/access-contact",
+    "/contact",
     "Contact et accès · Simon Bouvatier, coiffeur à Lyon 6e",
     "Salon Simon Bouvatier, 75 rue Pierre Corneille, 69006 Lyon, entre les métros Cordeliers et Part-Dieu. Ouvert du mardi au samedi, 9h–19h. 04 78 41 42 99.",
     "contact",
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default function Contact() {
   return (
     <>
-      <SiteHeader current="/access-contact" />
+      <SiteHeader current="/contact" />
       <main className="mx-auto max-w-[86rem] px-5 pt-16 pb-24 sm:px-10 sm:pt-24 sm:pb-32">
         <div className="rise">
           <ContactBlock heading="h1" />

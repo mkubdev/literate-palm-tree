@@ -17,7 +17,7 @@ export const serviceCategory = defineType({
       name: "slug",
       title: "Identifiant",
       type: "slug",
-      description: "Sert de lien direct sur le site (/services#coloration).",
+      description: "Sert de lien direct sur le site (/prestations#coloration).",
       options: { source: "title" },
       validation: (rule) => rule.required(),
     }),

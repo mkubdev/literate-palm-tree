@@ -56,7 +56,14 @@ export const sitePhotos = defineType({
       options: { layout: "grid" },
       validation: (rule) => rule.length(3),
     }),
-    photo("simon", "Photo de Simon", "Affichée sur la page Simon."),
+    defineField({
+      ...photo("simon", "Photo de Simon (déplacée)"),
+      description: "Se modifie maintenant dans « Page Simon ».",
+      deprecated: { reason: "La photo de Simon se modifie dans « Page Simon »." },
+      readOnly: true,
+      hidden: true,
+      validation: undefined,
+    }),
     defineField({
       name: "gallery",
       title: "Galerie (page Photos)",

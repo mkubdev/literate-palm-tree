@@ -1,6 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Adresses de l'ancien site (et premières versions) vers les adresses en français :
+  // redirections permanentes, Google transfère le référencement
+  async redirects() {
+    return [
+      { source: "/services", destination: "/prestations", permanent: true },
+      { source: "/team", destination: "/simon", permanent: true },
+      { source: "/access-contact", destination: "/contact", permanent: true },
+    ];
+  },
   images: {
     remotePatterns: [
       {
