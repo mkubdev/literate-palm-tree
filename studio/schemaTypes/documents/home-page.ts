@@ -31,12 +31,15 @@ export const homePage = defineType({
       type: "text",
       rows: 3,
       group: "hero",
-      description: "Le paragraphe sous le titre. Deux ou trois lignes suffisent.",
+      description:
+        "Le paragraphe sous le titre. Deux ou trois lignes suffisent.",
       validation: (rule) =>
         rule
           .required()
           .max(240)
-          .warning("Au-delà de 240 caractères, le haut de page devient chargé."),
+          .warning(
+            "Au-delà de 240 caractères, le haut de page devient chargé.",
+          ),
     }),
 
     defineField({

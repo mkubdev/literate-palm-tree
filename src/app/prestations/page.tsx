@@ -9,6 +9,7 @@ import {
 } from "@/components/site";
 import { salon } from "@/content/salon";
 import { pageMeta } from "@/lib/seo";
+import { getInfo } from "@/sanity/content";
 
 export const metadata: Metadata = {
   title: "Carte des services",
@@ -22,7 +23,8 @@ export const metadata: Metadata = {
   ),
 };
 
-export default function Services() {
+export default async function Prestations() {
+  const { phone, phoneHref } = await getInfo();
   return (
     <>
       <SiteHeader current="/prestations" />
@@ -32,10 +34,10 @@ export default function Services() {
             Tarifs en vigueur, réservation en ligne 24h/24 et paiement au salon.
             Lissages, mariage et extensions sur rendez-vous au{" "}
             <a
-              href={salon.phoneHref}
+              href={phoneHref}
               className="link whitespace-nowrap text-(--espresso)"
             >
-              {salon.phone}
+              {phone}
             </a>
             .
           </p>

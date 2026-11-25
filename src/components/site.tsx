@@ -1,8 +1,8 @@
 import { ArrowRight, ArrowUpRight, Phone } from "lucide-react";
 import { LogoMark } from "@/components/logo";
 import { OpenStatus, TodayMark } from "@/components/open-status";
-import { hours, type Service, salon } from "@/content/salon";
-import { getHome, getServices } from "@/sanity/content";
+import { type Service, salon } from "@/content/salon";
+import { getHome, getInfo, getServices, type Info } from "@/sanity/content";
 
 /** Réservation : page Planity du salon, dans un nouvel onglet */
 export const booking = {
@@ -24,8 +24,8 @@ export const fr = (t: string) =>
   t.replace(/ ([;:!?])/g, " $1").replace(/'/g, "’");
 
 /** Texte saisi dans le Studio : le numéro du salon y devient un lien d'appel */
-export function PhoneText({ text }: { text: string }) {
-  const phone = salon.phone;
+export async function PhoneText({ text }: { text: string }) {
+  const { phone, phoneHref } = await getInfo();
   if (!phone) return fr(text);
   const parts = fr(text).split(phone);
   return parts.map((part, i) =>
@@ -35,7 +35,7 @@ export function PhoneText({ text }: { text: string }) {
       // biome-ignore lint/suspicious/noArrayIndexKey: morceaux d'un même texte, ordre fixe
       <span key={i}>
         <a
-          href={salon.phoneHref}
+          href={phoneHref}
           className="link whitespace-nowrap text-(--espresso)"
         >
           {phone}
@@ -60,7 +60,8 @@ export function Logo({
   );
 }
 
-export function SiteHeader({ current }: { current?: string }) {
+export async function SiteHeader({ current }: { current?: string }) {
+  const { phone, phoneHref } = await getInfo();
   return (
     <header className="sticky top-0 z-40 border-b border-(--line) bg-(--white)">
       <div className="mx-auto grid max-w-[86rem] grid-cols-[auto_1fr_auto] items-center gap-3 px-5 py-4 sm:gap-6 lg:grid-cols-[1fr_auto_1fr] sm:px-10 sm:py-5">
@@ -104,7 +105,7 @@ export function SiteHeader({ current }: { current?: string }) {
               ))}
             </ul>
             <a
-              href={salon.phoneHref}
+              href={phoneHref}
               className="mt-6 inline-flex items-center gap-3 text-lg tabular-nums"
             >
               <Phone
@@ -112,7 +113,7 @@ export function SiteHeader({ current }: { current?: string }) {
                 className="size-4 text-(--gold)"
                 strokeWidth={1.25}
               />
-              {salon.phone}
+              {phone}
             </a>
           </nav>
         </details>
@@ -121,10 +122,10 @@ export function SiteHeader({ current }: { current?: string }) {
         </a>
         <div className="col-start-3 flex items-center justify-end gap-8">
           <a
-            href={salon.phoneHref}
+            href={phoneHref}
             className="label link hidden tabular-nums md:inline"
           >
-            {salon.phone}
+            {phone}
           </a>
           <a {...booking} className="btn btn-sm">
             Réserver
@@ -172,10 +173,18 @@ function durations(list: Service[]) {
   return [...new Set(list.map((s) => s.duration))].join(" à ");
 }
 
-function Price({ s, label }: { s: Service; label: string }) {
+function Price({
+  s,
+  label,
+  phoneHref,
+}: {
+  s: Service;
+  label: string;
+  phoneHref: string;
+}) {
   return (
     <a
-      href={s.online ? booking.href : salon.phoneHref}
+      href={s.online ? booking.href : phoneHref}
       target={s.online ? booking.target : undefined}
       rel={s.online ? booking.rel : undefined}
       aria-label={
@@ -195,7 +204,10 @@ function Price({ s, label }: { s: Service; label: string }) {
  * une colonne par longueur. Chaque prix réserve en ligne ou appelle le salon.
  */
 export async function PriceList({ className = "" }: { className?: string }) {
-  const services = await getServices();
+  const [services, { phoneHref }] = await Promise.all([
+    getServices(),
+    getInfo(),
+  ]);
   return (
     <div className={`gap-14 lg:columns-2 ${className}`}>
       {services.map((c) => {
@@ -249,7 +261,7 @@ export async function PriceList({ className = "" }: { className?: string }) {
                         {phoneOnly ? (
                           <>
                             {" · "}
-                            <a href={salon.phoneHref} className="link tap">
+                            <a href={phoneHref} className="link tap">
                               par téléphone
                             </a>
                           </>
@@ -258,7 +270,11 @@ export async function PriceList({ className = "" }: { className?: string }) {
                     </th>
                     {l.kind === "single" ? (
                       <td colSpan={3} className="py-3.5 text-right">
-                        <Price s={l.service} label={name} />
+                        <Price
+                          s={l.service}
+                          label={name}
+                          phoneHref={phoneHref}
+                        />
                       </td>
                     ) : (
                       LENGTHS.map((len, i) => {
@@ -269,7 +285,11 @@ export async function PriceList({ className = "" }: { className?: string }) {
                             className="w-16 py-3.5 text-right sm:w-24"
                           >
                             {s ? (
-                              <Price s={s} label={`${name}, cheveux ${len}`} />
+                              <Price
+                                s={s}
+                                label={`${name}, cheveux ${len}`}
+                                phoneHref={phoneHref}
+                              />
                             ) : (
                               <span className="text-(--line)">—</span>
                             )}
@@ -333,20 +353,20 @@ export async function PriceSummary({ className = "" }: { className?: string }) {
  * Plan OpenStreetMap (sans cookie de suivi, donc sans bandeau RGPD),
  * désaturé aux couleurs du salon ; l'épingle dorée est posée au centre exact.
  */
-function SalonMap() {
-  const { lat, lng } = salon.address;
+function SalonMap({ info }: { info: Info }) {
+  const { lat, lng } = info;
   const bbox = [lng - 0.0065, lat - 0.0032, lng + 0.0065, lat + 0.0032]
     .map((n) => n.toFixed(5))
     .join(",");
   return (
     <a
-      href={salon.mapsUrl}
+      href={info.mapsUrl}
       target="_blank"
       rel="noopener"
       className="map group relative block min-h-[22rem] overflow-hidden bg-(--veil) lg:min-h-full"
     >
       <iframe
-        title={`Plan : ${salon.address.street}, ${salon.address.zip} ${salon.address.city}`}
+        title={`Plan : ${info.street}, ${info.zip} ${info.city}`}
         src={`https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik`}
         loading="lazy"
         tabIndex={-1}
@@ -364,39 +384,44 @@ function SalonMap() {
 }
 
 /** Adresse, téléphone, horaires et plan : la carte de visite du salon */
-export function ContactBlock({ heading = "h2" }: { heading?: "h1" | "h2" }) {
+export async function ContactBlock({
+  heading = "h2",
+}: {
+  heading?: "h1" | "h2";
+}) {
   const H = heading;
+  const info = await getInfo();
   return (
     <div className="grid gap-10 lg:grid-cols-12 lg:gap-0">
       <div className="lg:col-span-5 lg:pr-16">
         <H className="display text-5xl leading-none sm:text-6xl">
-          Venir au salon
+          {fr(info.title)}
         </H>
         <dl className="mt-10 divide-y divide-(--line) border-y border-(--line)">
           <div className="grid gap-2 py-6 sm:grid-cols-[9rem_1fr]">
             <dt className="label pt-1 text-(--taupe)">Adresse</dt>
             <dd>
               <address className="not-italic">
-                {salon.address.street}
+                {info.street}
                 <br />
-                {salon.address.zip} {salon.address.city}
+                {info.zip} {info.city}
               </address>
-              <p className="mt-1 text-sm text-(--taupe)">
-                {salon.address.access}
-              </p>
+              {info.access ? (
+                <p className="mt-1 text-sm text-(--taupe)">{fr(info.access)}</p>
+              ) : null}
             </dd>
           </div>
           <div className="grid gap-2 py-6 sm:grid-cols-[9rem_1fr]">
             <dt className="label pt-1 text-(--taupe)">Téléphone</dt>
             <dd>
-              <a href={salon.phoneHref} className="link text-2xl tabular-nums">
-                {salon.phone}
+              <a href={info.phoneHref} className="link text-2xl tabular-nums">
+                {info.phone}
               </a>
               <a
-                href={`mailto:${salon.email}`}
+                href={`mailto:${info.email}`}
                 className="link tap mt-2 block w-fit text-sm text-(--taupe)"
               >
-                {salon.email}
+                {info.email}
               </a>
             </dd>
           </div>
@@ -404,16 +429,18 @@ export function ContactBlock({ heading = "h2" }: { heading?: "h1" | "h2" }) {
             <dt className="label pt-1 text-(--taupe)">Horaires</dt>
             <dd>
               <p>
-                <OpenStatus />
+                <OpenStatus hours={info.hours} fallback={info.hoursSummary} />
               </p>
               <ul className="hours mt-4 text-sm">
-                {hours.map((h, i) => (
+                {info.hours.map((h, i) => (
                   <li key={h.day} className="flex justify-between py-1">
-                    <TodayMark index={i}>{h.day}</TodayMark>
+                    <TodayMark index={i} hours={info.hours}>
+                      {h.day}
+                    </TodayMark>
                     <span
                       className={`tabular-nums ${h.open ? "" : "text-(--taupe)"}`}
                     >
-                      {h.open ? "9h – 19h" : "Fermé"}
+                      {info.slot(h)}
                     </span>
                   </li>
                 ))}
@@ -427,14 +454,14 @@ export function ContactBlock({ heading = "h2" }: { heading?: "h1" | "h2" }) {
         </a>
       </div>
       <div className="lg:col-span-7">
-        <SalonMap />
+        <SalonMap info={info} />
       </div>
     </div>
   );
 }
 
 export async function SiteFooter() {
-  const { closing } = await getHome();
+  const [{ closing }, info] = await Promise.all([getHome(), getInfo()]);
   return (
     <footer className="bg-(--espresso) text-white">
       <div className="mx-auto flex max-w-[86rem] flex-wrap items-end justify-between gap-10 border-b border-white/10 px-5 py-20 sm:px-10 sm:py-28">
@@ -446,8 +473,8 @@ export async function SiteFooter() {
             Prendre rendez-vous{" "}
             <ArrowUpRight className="size-4" strokeWidth={1.25} />
           </a>
-          <a href={salon.phoneHref} className="link text-lg tabular-nums">
-            {salon.phone}
+          <a href={info.phoneHref} className="link text-lg tabular-nums">
+            {info.phone}
           </a>
         </div>
       </div>
@@ -470,9 +497,9 @@ export async function SiteFooter() {
         </nav>
         <div className="flex flex-col gap-3 md:col-span-4">
           <address className="not-italic leading-relaxed">
-            {salon.address.street}
+            {info.street}
             <br />
-            {salon.address.zip} {salon.address.city}
+            {info.zip} {info.city}
           </address>
           <a
             href={salon.instagram}
@@ -494,7 +521,7 @@ export async function SiteFooter() {
       </div>
       <div className="mx-auto flex max-w-[86rem] flex-wrap justify-between gap-4 border-t border-white/10 px-5 py-8 text-sm text-white/60 sm:px-10">
         <p>
-          © {new Date().getFullYear()} {salon.name} · Coiffeur à Lyon 6e
+          © {new Date().getFullYear()} {salon.name} · Coiffeur à {info.district}
         </p>
         <div className="flex flex-wrap gap-x-8 gap-y-2">
           <a

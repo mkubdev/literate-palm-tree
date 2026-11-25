@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PageIntro, SiteFooter, SiteHeader } from "@/components/site";
 import { company, salon } from "@/content/salon";
 import { pageMeta } from "@/lib/seo";
+import { getInfo } from "@/sanity/content";
 
 export const metadata: Metadata = {
   title: "Mentions légales et confidentialité",
@@ -30,7 +31,8 @@ function Block({
   );
 }
 
-export default function MentionsLegales() {
+export default async function MentionsLegales() {
+  const info = await getInfo();
   return (
     <>
       <SiteHeader />
@@ -55,15 +57,15 @@ export default function MentionsLegales() {
               Directeur de la publication : {company.director}, président.
               <br />
               Téléphone :{" "}
-              <a href={salon.phoneHref} className="link text-(--espresso)">
-                {salon.phone}
+              <a href={info.phoneHref} className="link text-(--espresso)">
+                {info.phone}
               </a>{" "}
               · E-mail :{" "}
               <a
-                href={`mailto:${salon.email}`}
+                href={`mailto:${info.email}`}
                 className="link text-(--espresso)"
               >
-                {salon.email}
+                {info.email}
               </a>
             </p>
           </Block>
@@ -106,10 +108,10 @@ export default function MentionsLegales() {
             <p>
               Pour toute question, écrivez à{" "}
               <a
-                href={`mailto:${salon.email}`}
+                href={`mailto:${info.email}`}
                 className="link text-(--espresso)"
               >
-                {salon.email}
+                {info.email}
               </a>
               . Vous pouvez aussi saisir la CNIL (cnil.fr).
             </p>

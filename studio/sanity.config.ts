@@ -4,7 +4,13 @@ import { structureTool } from "sanity/structure";
 import { schemaTypes } from "./schemaTypes";
 import { structure } from "./structure";
 
-const SINGLETONS = ["homePage", "simonPage", "sitePhotos"];
+const SINGLETONS = [
+  "homePage",
+  "simonPage",
+  "photosPage",
+  "contactPage",
+  "sitePhotos",
+];
 
 export default defineConfig({
   name: "default",

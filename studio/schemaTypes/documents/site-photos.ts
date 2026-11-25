@@ -59,7 +59,9 @@ export const sitePhotos = defineType({
     defineField({
       ...photo("simon", "Photo de Simon (déplacée)"),
       description: "Se modifie maintenant dans « Page Simon ».",
-      deprecated: { reason: "La photo de Simon se modifie dans « Page Simon »." },
+      deprecated: {
+        reason: "La photo de Simon se modifie dans « Page Simon ».",
+      },
       readOnly: true,
       hidden: true,
       validation: undefined,

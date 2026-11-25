@@ -13,13 +13,14 @@ import {
 } from "@/components/site";
 import { salon } from "@/content/salon";
 import { getInstagramPosts } from "@/lib/instagram";
-import { getHome, getPhotos } from "@/sanity/content";
+import { getHome, getInfo, getPhotos } from "@/sanity/content";
 
-export default async function V7() {
-  const [posts, photos, home] = await Promise.all([
+export default async function Home() {
+  const [posts, photos, home, info] = await Promise.all([
     getInstagramPosts(6),
     getPhotos(),
     getHome(),
+    getInfo(),
   ]);
 
   return (
@@ -48,21 +49,24 @@ export default async function V7() {
                   Prendre rendez-vous{" "}
                   <ArrowUpRight className="size-4" strokeWidth={1.25} />
                 </a>
-                <a href={salon.phoneHref} className="link text-lg tabular-nums">
-                  {salon.phone}
+                <a href={info.phoneHref} className="link text-lg tabular-nums">
+                  {info.phone}
                 </a>
               </div>
               <dl className="grid grid-cols-2 gap-6 border-t border-(--line) pt-6 text-sm">
                 <div>
                   <dt className="label text-(--taupe)">Aujourd’hui</dt>
                   <dd className="mt-2">
-                    <OpenStatus />
+                    <OpenStatus
+                      hours={info.hours}
+                      fallback={info.hoursSummary}
+                    />
                   </dd>
                 </div>
                 <div>
                   <dt className="label text-(--taupe)">Adresse</dt>
                   <dd className="mt-2">
-                    {salon.address.street}, {salon.address.district}
+                    {info.street}, {info.district}
                   </dd>
                 </div>
               </dl>

@@ -1,11 +1,11 @@
 import { ArrowUpRight } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
-import { PageIntro, SiteFooter, SiteHeader } from "@/components/site";
+import { fr, PageIntro, SiteFooter, SiteHeader } from "@/components/site";
 import { salon } from "@/content/salon";
 import { getInstagramPosts } from "@/lib/instagram";
 import { pageMeta } from "@/lib/seo";
-import { getPhotos } from "@/sanity/content";
+import { getPhotos, getPhotosPage } from "@/sanity/content";
 
 export const metadata: Metadata = {
   title: "Photos du salon",
@@ -31,20 +31,18 @@ const SPANS = [
 ];
 
 export default async function Photos() {
-  const [posts, { gallery }] = await Promise.all([
+  const [posts, { gallery }, page] = await Promise.all([
     getInstagramPosts(12),
     getPhotos(),
+    getPhotosPage(),
   ]);
 
   return (
     <>
       <SiteHeader current="/photos" />
       <main>
-        <PageIntro title="Le salon en images">
-          <p>
-            Rue Pierre Corneille, entre Cordeliers et Part-Dieu : un lieu
-            lumineux, des lustres de cristal, des miroirs signés.
-          </p>
+        <PageIntro title={fr(page.title)}>
+          <p>{fr(page.intro)}</p>
         </PageIntro>
         <ul className="mx-auto grid max-w-[86rem] auto-rows-[minmax(16rem,auto)] gap-4 px-5 sm:grid-cols-2 sm:gap-6 sm:px-10 lg:grid-cols-12 lg:auto-rows-[18rem]">
           {gallery.map((p, i) => (
@@ -67,7 +65,7 @@ export default async function Photos() {
         <section className="mx-auto max-w-[86rem] px-5 py-24 sm:px-10 sm:py-32">
           <div className="flex flex-wrap items-end justify-between gap-6">
             <h2 className="display text-5xl leading-none sm:text-6xl">
-              Dernières réalisations
+              {fr(page.worksTitle)}
             </h2>
             <a
               href={salon.instagram}
@@ -105,17 +103,26 @@ export default async function Photos() {
             </ul>
           ) : (
             <p className="mt-8 max-w-[52ch] text-lg leading-relaxed text-(--taupe)">
-              Coupes, couleurs et coiffures de mariée : les réalisations de
-              Simon sont à retrouver sur{" "}
-              <a
-                href={salon.instagram}
-                target="_blank"
-                rel="noopener"
-                className="link text-(--espresso)"
-              >
-                Instagram
-              </a>
-              .
+              {fr(page.worksText)
+                .split("Instagram")
+                .map((part, i) =>
+                  i === 0 ? (
+                    part
+                  ) : (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: morceaux d'un même texte, ordre fixe
+                    <span key={i}>
+                      <a
+                        href={salon.instagram}
+                        target="_blank"
+                        rel="noopener"
+                        className="link text-(--espresso)"
+                      >
+                        Instagram
+                      </a>
+                      {part}
+                    </span>
+                  ),
+                )}
             </p>
           )}
         </section>

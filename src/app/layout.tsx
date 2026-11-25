@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Italiana, Jost } from "next/font/google";
-import { hours, SITE_URL, salon } from "@/content/salon";
+import { SITE_URL, salon } from "@/content/salon";
 import { pageMeta } from "@/lib/seo";
-import { getPhotos, getServices } from "@/sanity/content";
+import { getInfo, getPhotos, getServices } from "@/sanity/content";
 import "./globals.css";
 import "./site.css";
 
@@ -50,7 +50,11 @@ const days = [
 
 /** Fiche « salon de coiffure » lue par Google (schema.org) */
 async function salonJsonLd() {
-  const [services, photos] = await Promise.all([getServices(), getPhotos()]);
+  const [services, photos, info] = await Promise.all([
+    getServices(),
+    getPhotos(),
+    getInfo(),
+  ]);
   return {
     "@context": "https://schema.org",
     "@type": "HairSalon",
@@ -58,8 +62,8 @@ async function salonJsonLd() {
     name: salon.name,
     description: "Coiffeur, coloriste et visagiste à Lyon 6e.",
     url: SITE_URL,
-    telephone: "+33478414299",
-    email: salon.email,
+    telephone: info.phoneHref.replace("tel:", ""),
+    email: info.email,
     image: photos.hero.src.startsWith("http")
       ? photos.hero.src
       : `${SITE_URL}${photos.hero.src}`,
@@ -68,17 +72,17 @@ async function salonJsonLd() {
     currenciesAccepted: "EUR",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "75 rue Pierre Corneille",
-      postalCode: salon.address.zip,
-      addressLocality: salon.address.city,
+      streetAddress: info.street,
+      postalCode: info.zip,
+      addressLocality: info.city,
       addressCountry: "FR",
     },
     geo: {
       "@type": "GeoCoordinates",
-      latitude: salon.address.lat,
-      longitude: salon.address.lng,
+      latitude: info.lat,
+      longitude: info.lng,
     },
-    openingHoursSpecification: hours.flatMap((h, i) =>
+    openingHoursSpecification: info.hours.flatMap((h, i) =>
       h.open
         ? [
             {

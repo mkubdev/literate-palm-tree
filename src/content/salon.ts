@@ -531,3 +531,13 @@ export const simonPage = {
   cta: "Prendre rendez-vous avec Simon",
   promisesTitle: "Ses engagements",
 };
+
+// Page /photos (secours ; la référence est le document « Page Photos » de Sanity)
+export const photosPage = {
+  title: "Le salon en images",
+  intro:
+    "Rue Pierre Corneille, entre Cordeliers et Part-Dieu : un lieu lumineux, des lustres de cristal, des miroirs signés.",
+  worksTitle: "Dernières réalisations",
+  worksText:
+    "Coupes, couleurs et coiffures de mariée : les réalisations de Simon sont à retrouver sur Instagram.",
+};
