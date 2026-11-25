@@ -1,11 +1,17 @@
 import type { Metadata } from "next";
 import { ContactBlock, SiteFooter, SiteHeader } from "@/components/site";
+import { pageMeta } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Contact et accès",
-  alternates: { canonical: "/access-contact" },
   description:
     "Salon Simon Bouvatier, 75 rue Pierre Corneille, 69006 Lyon, entre les métros Cordeliers et Part-Dieu. Ouvert du mardi au samedi, 9h–19h. 04 78 41 42 99.",
+  ...pageMeta(
+    "/access-contact",
+    "Contact et accès · Simon Bouvatier, coiffeur à Lyon 6e",
+    "Salon Simon Bouvatier, 75 rue Pierre Corneille, 69006 Lyon, entre les métros Cordeliers et Part-Dieu. Ouvert du mardi au samedi, 9h–19h. 04 78 41 42 99.",
+    "contact",
+  ),
 };
 
 export default function Contact() {

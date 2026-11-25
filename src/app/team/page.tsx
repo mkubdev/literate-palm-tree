@@ -1,15 +1,21 @@
 import { ArrowUpRight } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
-import { bio } from "@/content/salon";
-import { getHome, getPhotos } from "@/sanity/content";
 import { booking, fr, SiteFooter, SiteHeader } from "@/components/site";
+import { bio } from "@/content/salon";
+import { pageMeta } from "@/lib/seo";
+import { getHome, getPhotos } from "@/sanity/content";
 
 export const metadata: Metadata = {
   title: "Simon, coiffeur, coloriste et visagiste",
-  alternates: { canonical: "/team" },
   description:
     "Coiffeur, coloriste et visagiste formé à Valence et à Paris, Simon Bouvatier vous reçoit seul dans son salon du 75 rue Pierre Corneille, Lyon 6e.",
+  ...pageMeta(
+    "/team",
+    "Simon, coiffeur, coloriste et visagiste · Simon Bouvatier, coiffeur à Lyon 6e",
+    "Coiffeur, coloriste et visagiste formé à Valence et à Paris, Simon Bouvatier vous reçoit seul dans son salon du 75 rue Pierre Corneille, Lyon 6e.",
+    "simon",
+  ),
 };
 
 export default async function Team() {

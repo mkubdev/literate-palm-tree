@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
 import { PageIntro, SiteFooter, SiteHeader } from "@/components/site";
 import { company, salon } from "@/content/salon";
+import { pageMeta } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Mentions légales et confidentialité",
-  alternates: { canonical: "/mentions-legales" },
+  ...pageMeta(
+    "/mentions-legales",
+    "Mentions légales et confidentialité · Simon Bouvatier, coiffeur à Lyon 6e",
+    "Mentions légales et confidentialité du site du salon Simon Bouvatier, Lyon 6e.",
+  ),
   robots: { index: false },
 };
 

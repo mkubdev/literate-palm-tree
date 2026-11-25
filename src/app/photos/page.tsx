@@ -1,16 +1,22 @@
 import { ArrowUpRight } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
+import { PageIntro, SiteFooter, SiteHeader } from "@/components/site";
 import { salon } from "@/content/salon";
 import { getInstagramPosts } from "@/lib/instagram";
+import { pageMeta } from "@/lib/seo";
 import { getPhotos } from "@/sanity/content";
-import { PageIntro, SiteFooter, SiteHeader } from "@/components/site";
 
 export const metadata: Metadata = {
   title: "Photos du salon",
-  alternates: { canonical: "/photos" },
   description:
     "Le salon Simon Bouvatier en images : lustres de cristal, miroirs signés, bacs et soins haut de gamme, rue Pierre Corneille à Lyon 6e.",
+  ...pageMeta(
+    "/photos",
+    "Photos du salon · Simon Bouvatier, coiffeur à Lyon 6e",
+    "Le salon Simon Bouvatier en images : lustres de cristal, miroirs signés, bacs et soins haut de gamme, rue Pierre Corneille à Lyon 6e.",
+    "photos",
+  ),
 };
 
 // Grille : une grande, une haute, trois petites, deux moyennes, puis on recommence

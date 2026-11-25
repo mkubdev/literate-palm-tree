@@ -1,9 +1,6 @@
 import { ArrowUpRight, Star } from "lucide-react";
 import Image from "next/image";
 import { OpenStatus } from "@/components/open-status";
-import { salon } from "@/content/salon";
-import { getInstagramPosts } from "@/lib/instagram";
-import { getHome, getPhotos } from "@/sanity/content";
 import {
   booking,
   ContactBlock,
@@ -14,6 +11,9 @@ import {
   SiteFooter,
   SiteHeader,
 } from "@/components/site";
+import { salon } from "@/content/salon";
+import { getInstagramPosts } from "@/lib/instagram";
+import { getHome, getPhotos } from "@/sanity/content";
 
 export default async function V7() {
   const [posts, photos, home] = await Promise.all([

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Italiana, Jost } from "next/font/google";
 import { hours, SITE_URL, salon } from "@/content/salon";
+import { pageMeta } from "@/lib/seo";
 import { getPhotos, getServices } from "@/sanity/content";
 import "./globals.css";
 import "./site.css";
@@ -26,13 +27,11 @@ export const metadata: Metadata = {
   },
   description:
     "Salon de coiffure Simon Bouvatier, 75 rue Pierre Corneille, Lyon 6e, entre Cordeliers et Part-Dieu. Coupe, couleur, mèches, lissage brésilien, mariage. Du mardi au samedi, 9h–19h.",
-  alternates: { canonical: "/" },
-  openGraph: {
-    type: "website",
-    locale: "fr_FR",
-    siteName: "Simon Bouvatier",
-    url: "/",
-  },
+  ...pageMeta(
+    "/",
+    "Simon Bouvatier · Coiffeur, coloriste, visagiste à Lyon 6e",
+    "Salon de coiffure à Lyon 6e, entre Cordeliers et Part-Dieu. Coupe, couleur, mèches, lissage brésilien, mariage. Réservation en ligne.",
+  ),
 };
 
 export const viewport: Viewport = { themeColor: "#ffffff" };

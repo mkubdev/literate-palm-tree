@@ -9,7 +9,7 @@
 - Réservation : tous les boutons ouvrent la page Planity du salon dans un nouvel onglet.
 - Contact : plan OpenStreetMap (sans cookie), horaires avec statut ouvert/fermé en direct.
 - Logo vectorisé depuis la photo de l'enseigne : `public/brand/logo.svg`, `logo-blanc.svg`, `logo-noir.svg`, icône `icone.svg`.
-- SEO : titres et descriptions par page, URL canoniques, `sitemap.xml`, `robots.txt`, fiche schema.org `HairSalon` (adresse, horaires, prix, réservation), image de partage, favicon et icône iPhone.
+- SEO : titres et descriptions par page, URL canoniques, `sitemap.xml`, `robots.txt`, fiche schema.org `HairSalon` (adresse, horaires, prix, réservation), une image de partage par page dans la DA du site (WhatsApp, Facebook, Instagram en message privé, X ; `scripts/partage.mjs` pour les régénérer), favicon et icône iPhone.
 - Mentions légales (KALAME SAS) et confidentialité : aucun cookie, aucune collecte, donc pas de bandeau cookies.
 - Anciennes versions (V3 à V6, sélecteur) archivées dans `_archive/`, hors du build.
 - **Sanity (projet `8b9euu7b`, dataset `production`)** : carte des prestations et photos du site modifiables par Simon. Studio dans `studio/`, contenu importé (7 catégories, 46 prestations, 8 photos dont les 2 de l'ancien site Wavy). Le site relit Sanity au plus toutes les 60 s et retombe sur `src/content/salon.ts` si Sanity ne répond pas.

@@ -1,6 +1,5 @@
 import { ArrowUpRight } from "lucide-react";
 import type { Metadata } from "next";
-import { salon } from "@/content/salon";
 import {
   booking,
   PageIntro,
@@ -8,12 +7,19 @@ import {
   SiteFooter,
   SiteHeader,
 } from "@/components/site";
+import { salon } from "@/content/salon";
+import { pageMeta } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Carte des services",
-  alternates: { canonical: "/services" },
   description:
     "Tarifs du salon Simon Bouvatier : coupe, brushing, coloration, mèches, lissage brésilien, mariage, homme et enfant. Réservation en ligne 24h/24.",
+  ...pageMeta(
+    "/services",
+    "Carte des services · Simon Bouvatier, coiffeur à Lyon 6e",
+    "Tarifs du salon Simon Bouvatier : coupe, brushing, coloration, mèches, lissage brésilien, mariage, homme et enfant. Réservation en ligne 24h/24.",
+    "services",
+  ),
 };
 
 export default function Services() {

@@ -2,9 +2,9 @@ import "server-only";
 import {
   home as localHome,
   photos as localPhotos,
-  salonPhotos,
-  type ServiceCategory,
   services as localServices,
+  type ServiceCategory,
+  salonPhotos,
 } from "@/content/salon";
 import { client, urlFor } from "./client";
 
