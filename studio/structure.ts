@@ -1,3 +1,4 @@
+import { HomeIcon } from "@sanity/icons/Home";
 import { ImagesIcon } from "@sanity/icons/Images";
 import { ListIcon } from "@sanity/icons/List";
 import type { StructureResolver } from "sanity/structure";
@@ -7,6 +8,15 @@ export const structure: StructureResolver = (S) =>
   S.list()
     .title("Contenu du site")
     .items([
+      S.listItem()
+        .title("Page d’accueil")
+        .icon(HomeIcon)
+        .child(
+          S.document()
+            .schemaType("homePage")
+            .documentId("homePage")
+            .title("Page d’accueil"),
+        ),
       S.listItem()
         .title("Carte des prestations")
         .icon(ListIcon)

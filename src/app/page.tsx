@@ -1,13 +1,14 @@
 import { ArrowUpRight, Star } from "lucide-react";
 import Image from "next/image";
 import { OpenStatus } from "@/components/open-status";
-import { promises, reviews, salon } from "@/content/salon";
+import { salon } from "@/content/salon";
 import { getInstagramPosts } from "@/lib/instagram";
-import { getPhotos } from "@/sanity/content";
+import { getHome, getPhotos } from "@/sanity/content";
 import {
   booking,
   ContactBlock,
   fr,
+  PhoneText,
   PriceList,
   PriceSummary,
   SiteFooter,
@@ -15,9 +16,10 @@ import {
 } from "@/components/site";
 
 export default async function V7() {
-  const [posts, photos] = await Promise.all([
+  const [posts, photos, home] = await Promise.all([
     getInstagramPosts(6),
     getPhotos(),
+    getHome(),
   ]);
 
   return (
@@ -29,15 +31,15 @@ export default async function V7() {
           <div className="rise flex flex-col justify-between gap-12 lg:col-span-5 lg:py-6 lg:pr-12">
             <div>
               <h1 className="display text-[clamp(3.25rem,6.4vw,6rem)] leading-[0.98] tracking-[-0.01em]">
-                Coiffeur,
-                <br />
-                coloriste,
-                <br />
-                visagiste.
+                {home.title.split("\n").map((line, i) => (
+                  // biome-ignore lint/suspicious/noArrayIndexKey: lignes d'un même titre, ordre fixe
+                  <span key={i} className="block">
+                    {fr(line)}
+                  </span>
+                ))}
               </h1>
               <p className="mt-8 max-w-[38ch] text-lg leading-relaxed text-(--taupe)">
-                Le salon de Simon Bouvatier, à Lyon 6e. Une seule personne vous
-                reçoit, vous écoute et vous coiffe, de la coupe à la couleur.
+                {fr(home.intro)}
               </p>
             </div>
             <div className="space-y-8">
@@ -83,13 +85,10 @@ export default async function V7() {
           <div className="mx-auto max-w-[86rem] px-5 sm:px-10">
             <div className="grid gap-10 lg:grid-cols-12">
               <h2 className="display text-5xl leading-none sm:text-6xl lg:col-span-5">
-                Le salon
+                {fr(home.salonTitle)}
               </h2>
               <p className="max-w-[52ch] text-lg leading-relaxed text-(--taupe) lg:col-span-6 lg:col-start-7">
-                Rue Pierre Corneille, entre Cordeliers et Part-Dieu. Un lieu
-                lumineux, des lustres de cristal, des miroirs signés, et un
-                moment pour vous. Diagnostic capillaire offert, devis détaillé,
-                produits haut de gamme.
+                {fr(home.salonText)}
               </p>
             </div>
             <div className="mt-16 grid gap-4 sm:gap-6 lg:grid-cols-12">
@@ -118,12 +117,12 @@ export default async function V7() {
               ))}
             </div>
             <ul className="mt-16 grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:grid-cols-5">
-              {promises.map((p) => (
+              {home.promises.map((p) => (
                 <li
                   key={p}
                   className="border-t border-(--gold) pt-5 leading-snug"
                 >
-                  {p}
+                  {fr(p)}
                 </li>
               ))}
             </ul>
@@ -136,19 +135,11 @@ export default async function V7() {
         >
           <div className="grid items-end gap-10 lg:grid-cols-12">
             <h2 className="display text-5xl leading-none sm:text-6xl lg:col-span-5">
-              Prestations
+              {fr(home.servicesTitle)}
             </h2>
             <div className="flex flex-wrap items-end justify-between gap-8 lg:col-span-7">
               <p className="max-w-[40ch] text-(--taupe)">
-                Tarifs en vigueur, réservation en ligne 24h/24. Lissages,
-                mariage et extensions sur rendez-vous au{" "}
-                <a
-                  href={salon.phoneHref}
-                  className="link whitespace-nowrap text-(--espresso)"
-                >
-                  {salon.phone}
-                </a>
-                .
+                <PhoneText text={home.servicesText} />
               </p>
               <a {...booking} className="btn btn-ghost">
                 Réserver en ligne{" "}
@@ -165,7 +156,7 @@ export default async function V7() {
             <div className="grid gap-12 lg:grid-cols-12">
               <figure className="lg:col-span-8">
                 <blockquote className="display text-[clamp(2rem,3.8vw,3.25rem)] leading-[1.12]">
-                  «&nbsp;{fr(reviews[0].text)}&nbsp;»
+                  «&nbsp;{fr(home.reviews[0].text)}&nbsp;»
                 </blockquote>
                 <figcaption className="label mt-8 text-(--taupe)">
                   Avis client vérifié · Planity
@@ -176,7 +167,7 @@ export default async function V7() {
                   {[0, 1, 2, 3, 4].map((i) => (
                     <Star
                       key={i}
-                      className="size-4 fill-current"
+                      className={`size-4 ${i < Math.round(home.rating.score) ? "fill-current" : "fill-(--line) text-(--line)"}`}
                       strokeWidth={0}
                     />
                   ))}
@@ -185,17 +176,20 @@ export default async function V7() {
                   <div>
                     <dt className="sr-only">Note Planity</dt>
                     <dd className="display text-6xl leading-none sm:text-7xl">
-                      {salon.rating.score}
+                      {home.rating.score.toLocaleString("fr-FR", {
+                        minimumFractionDigits: 1,
+                        maximumFractionDigits: 1,
+                      })}
                     </dd>
                     <dd className="mt-3 text-sm text-(--taupe)">
-                      sur 5 · {salon.rating.count} avis vérifiés Planity
+                      sur 5 · {home.rating.count} avis vérifiés Planity
                     </dd>
                   </div>
                 </dl>
               </div>
             </div>
             <ul className="mt-20 grid gap-x-10 gap-y-10 md:grid-cols-3">
-              {reviews.slice(1, 4).map((r) => (
+              {home.reviews.slice(1, 4).map((r) => (
                 <li key={r.text} className="border-t border-(--line) pt-6">
                   <p className="leading-relaxed">«&nbsp;{fr(r.text)}&nbsp;»</p>
                   <p className="label mt-4 text-(--taupe)">

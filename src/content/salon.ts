@@ -501,3 +501,23 @@ export const company = {
     url: "https://vercel.com",
   },
 };
+
+// Textes de l'accueil (secours ; la référence est le document « Page d'accueil » de Sanity)
+export const home = {
+  title: "Coiffeur,\ncoloriste,\nvisagiste.",
+  intro:
+    "Le salon de Simon Bouvatier, à Lyon 6e. Une seule personne vous reçoit, vous écoute et vous coiffe, de la coupe à la couleur.",
+  salonTitle: "Le salon",
+  salonText:
+    "Rue Pierre Corneille, entre Cordeliers et Part-Dieu. Un lieu lumineux, des lustres de cristal, des miroirs signés, et un moment pour vous. Diagnostic capillaire offert, devis détaillé, produits haut de gamme.",
+  promises,
+  servicesTitle: "Prestations",
+  servicesText:
+    "Tarifs en vigueur, réservation en ligne 24h/24. Lissages, mariage et extensions sur rendez-vous au 04 78 41 42 99.",
+  rating: { score: 5, count: salon.rating.count },
+  reviews: reviews.map((r) => ({
+    text: r.text,
+    author: r.author ?? undefined,
+  })),
+  closing: "À bientôt rue Pierre Corneille.",
+};

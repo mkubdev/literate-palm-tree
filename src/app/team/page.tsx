@@ -1,8 +1,8 @@
 import { ArrowUpRight } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
-import { bio, promises } from "@/content/salon";
-import { getPhotos } from "@/sanity/content";
+import { bio } from "@/content/salon";
+import { getHome, getPhotos } from "@/sanity/content";
 import { booking, fr, SiteFooter, SiteHeader } from "@/components/site";
 
 export const metadata: Metadata = {
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Team() {
-  const { simon } = await getPhotos();
+  const [{ simon }, { promises }] = await Promise.all([getPhotos(), getHome()]);
   return (
     <>
       <SiteHeader current="/team" />
@@ -65,7 +65,7 @@ export default async function Team() {
                   key={p}
                   className="display border-b border-(--line) py-5 text-2xl first:border-t sm:text-3xl"
                 >
-                  {p}
+                  {fr(p)}
                 </li>
               ))}
             </ul>

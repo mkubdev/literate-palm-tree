@@ -2,7 +2,7 @@ import { ArrowRight, ArrowUpRight, Phone } from "lucide-react";
 import { LogoMark } from "@/components/logo";
 import { OpenStatus, TodayMark } from "@/components/open-status";
 import { hours, type Service, salon } from "@/content/salon";
-import { getServices } from "@/sanity/content";
+import { getHome, getServices } from "@/sanity/content";
 
 /** Réservation : page Planity du salon, dans un nouvel onglet */
 export const booking = {
@@ -22,6 +22,29 @@ export const pages = [
 /** Typographie française : espaces insécables fines et apostrophes courbes */
 export const fr = (t: string) =>
   t.replace(/ ([;:!?])/g, " $1").replace(/'/g, "’");
+
+/** Texte saisi dans le Studio : le numéro du salon y devient un lien d'appel */
+export function PhoneText({ text }: { text: string }) {
+  const phone = salon.phone;
+  if (!phone) return fr(text);
+  const parts = fr(text).split(phone);
+  return parts.map((part, i) =>
+    i === 0 ? (
+      part
+    ) : (
+      // biome-ignore lint/suspicious/noArrayIndexKey: morceaux d'un même texte, ordre fixe
+      <span key={i}>
+        <a
+          href={salon.phoneHref}
+          className="link whitespace-nowrap text-(--espresso)"
+        >
+          {phone}
+        </a>
+        {part}
+      </span>
+    ),
+  );
+}
 
 export function Logo({
   tone = "noir",
@@ -410,12 +433,13 @@ export function ContactBlock({ heading = "h2" }: { heading?: "h1" | "h2" }) {
   );
 }
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  const { closing } = await getHome();
   return (
     <footer className="bg-(--espresso) text-white">
       <div className="mx-auto flex max-w-[86rem] flex-wrap items-end justify-between gap-10 border-b border-white/10 px-5 py-20 sm:px-10 sm:py-28">
         <p className="display max-w-[14ch] text-[clamp(2.75rem,5.5vw,5rem)] leading-[1.02]">
-          À bientôt rue Pierre Corneille.
+          {fr(closing)}
         </p>
         <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
           <a {...booking} className="btn btn-light">

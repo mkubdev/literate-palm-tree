@@ -4,6 +4,8 @@ import { structureTool } from "sanity/structure";
 import { schemaTypes } from "./schemaTypes";
 import { structure } from "./structure";
 
+const SINGLETONS = ["homePage", "sitePhotos"];
+
 export default defineConfig({
   name: "default",
   title: "Simon Bouvatier",
@@ -12,13 +14,13 @@ export default defineConfig({
   plugins: [structureTool({ structure }), visionTool()],
   schema: {
     types: schemaTypes,
-    // « Photos du site » est un document unique : pas de création depuis le menu
+    // Documents uniques : pas de création depuis le menu
     templates: (templates) =>
-      templates.filter((t) => t.schemaType !== "sitePhotos"),
+      templates.filter((t) => !SINGLETONS.includes(t.schemaType)),
   },
   document: {
     actions: (actions, { schemaType }) =>
-      schemaType === "sitePhotos"
+      SINGLETONS.includes(schemaType)
         ? actions.filter(
             (a) =>
               !["duplicate", "delete", "unpublish"].includes(a.action ?? ""),

@@ -42,7 +42,7 @@
 ## Plus tard
 
 - [ ] **Studio en ligne** : `cd studio && npx sanity deploy` (adresse prévue : simon-bouvatier.sanity.studio), puis inviter Simon comme Editor sur sanity.io/manage.
-- [ ] **Sanity, étape 2** : horaires, fermetures exceptionnelles, avis, textes. Les données sont dans `src/content/salon.ts`.
+- [ ] **Sanity, étape 2** : horaires, fermetures exceptionnelles, avis, textes des autres pages (tous les textes de l’accueil sont déjà modifiables). Les données sont dans `src/content/salon.ts`.
 - [ ] Mise à jour instantanée (au lieu de 60 s) : webhook Sanity vers une route `/api/revalidate` qui appelle `revalidateTag("sanity")`.
 - [ ] **Fermetures exceptionnelles** : bandeau « Fermé du … au … » ; sans ça le statut « Ouvert · ferme à 19h » est faux pendant les vacances.
 - [ ] **Instagram** : flux Behold. Envoyer à Simon le lien d'autorisation Behold (son compte doit être professionnel), puis renseigner `INSTAGRAM_FEED_URL`. Le code est prêt (`src/lib/instagram.ts`).

@@ -1,5 +1,6 @@
 import "server-only";
 import {
+  home as localHome,
   photos as localPhotos,
   salonPhotos,
   type ServiceCategory,
@@ -126,5 +127,35 @@ export async function getPhotos() {
     salon: list(data?.salon, fallbackPhotos.salon),
     simon: toPhoto(data?.simon, fallbackPhotos.simon),
     gallery: list(data?.gallery, fallbackPhotos.gallery),
+  };
+}
+
+export type Home = typeof localHome;
+
+/** Textes de l'accueil, document unique « Page d'accueil » ; chaque champ vide retombe sur le texte par défaut */
+export async function getHome(): Promise<Home> {
+  const data = await query<Partial<Home>>(
+    `*[_id == "homePage"][0]{
+      title, intro, salonTitle, salonText, promises,
+      servicesTitle, servicesText, rating{score, count},
+      reviews[]{ text, author }, closing
+    }`,
+  );
+  const text = (v: string | undefined, fallback: string) =>
+    v?.trim() || fallback;
+  return {
+    title: text(data?.title, localHome.title),
+    intro: text(data?.intro, localHome.intro),
+    salonTitle: text(data?.salonTitle, localHome.salonTitle),
+    salonText: text(data?.salonText, localHome.salonText),
+    promises: data?.promises?.length ? data.promises : localHome.promises,
+    servicesTitle: text(data?.servicesTitle, localHome.servicesTitle),
+    servicesText: text(data?.servicesText, localHome.servicesText),
+    rating:
+      data?.rating?.score != null && data.rating.count != null
+        ? data.rating
+        : localHome.rating,
+    reviews: data?.reviews?.length ? data.reviews : localHome.reviews,
+    closing: text(data?.closing, localHome.closing),
   };
 }
