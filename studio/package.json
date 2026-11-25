@@ -1,0 +1,24 @@
+{
+  "name": "simon-bouvatier-studio",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "sanity dev",
+    "build": "sanity build",
+    "publish": "sanity deploy",
+    "seed": "sanity exec scripts/seed.ts --with-user-token"
+  },
+  "dependencies": {
+    "@sanity/icons": "^5.4.0",
+    "@sanity/vision": "^6.25.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "sanity": "^6.25.0",
+    "styled-components": "^6.7.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "typescript": "^5"
+  }
+}

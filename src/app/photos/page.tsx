@@ -1,8 +1,9 @@
 import { ArrowUpRight } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
-import { photos, salon, salonPhotos } from "@/content/salon";
+import { salon } from "@/content/salon";
 import { getInstagramPosts } from "@/lib/instagram";
+import { getPhotos } from "@/sanity/content";
 import { PageIntro, SiteFooter, SiteHeader } from "@/components/site";
 
 export const metadata: Metadata = {
@@ -12,19 +13,22 @@ export const metadata: Metadata = {
     "Le salon Simon Bouvatier en images : lustres de cristal, miroirs signés, bacs et soins haut de gamme, rue Pierre Corneille à Lyon 6e.",
 };
 
-// Ordre pensé pour la grille : une grande, deux petites, en alternance
-const gallery = [
-  { ...salonPhotos.allee, span: "lg:col-span-8 lg:row-span-2" },
-  { ...salonPhotos.facade, span: "lg:col-span-4 lg:row-span-2" },
-  { ...salonPhotos.postes, span: "lg:col-span-4" },
-  { ...photos.salon, span: "lg:col-span-4" },
-  { ...salonPhotos.bacs, span: "lg:col-span-4" },
-  { ...salonPhotos.vitrine, span: "lg:col-span-6" },
-  { ...salonPhotos.produits, span: "lg:col-span-6" },
+// Grille : une grande, une haute, trois petites, deux moyennes, puis on recommence
+const SPANS = [
+  "lg:col-span-8 lg:row-span-2",
+  "lg:col-span-4 lg:row-span-2",
+  "lg:col-span-4",
+  "lg:col-span-4",
+  "lg:col-span-4",
+  "lg:col-span-6",
+  "lg:col-span-6",
 ];
 
 export default async function Photos() {
-  const posts = await getInstagramPosts(12);
+  const [posts, { gallery }] = await Promise.all([
+    getInstagramPosts(12),
+    getPhotos(),
+  ]);
 
   return (
     <>
@@ -37,10 +41,10 @@ export default async function Photos() {
           </p>
         </PageIntro>
         <ul className="mx-auto grid max-w-[86rem] auto-rows-[minmax(16rem,auto)] gap-4 px-5 sm:grid-cols-2 sm:gap-6 sm:px-10 lg:grid-cols-12 lg:auto-rows-[18rem]">
-          {gallery.map((p) => (
+          {gallery.map((p, i) => (
             <li
-              key={p.src}
-              className={`drift relative min-h-[16rem] overflow-hidden bg-(--veil) ${p.span}`}
+              key={`${i}-${p.src}`}
+              className={`drift relative min-h-[16rem] overflow-hidden bg-(--veil) ${SPANS[i % SPANS.length]}`}
             >
               <Image
                 src={p.src}
@@ -48,6 +52,7 @@ export default async function Photos() {
                 fill
                 sizes="(min-width: 1024px) 60vw, (min-width: 640px) 50vw, 100vw"
                 className="object-cover"
+                style={{ objectPosition: p.position }}
               />
             </li>
           ))}
@@ -62,7 +67,7 @@ export default async function Photos() {
               href={salon.instagram}
               target="_blank"
               rel="noopener"
-              className="label link flex items-center gap-2"
+              className="label link tap flex items-center gap-2"
             >
               {salon.instagramHandle}{" "}
               <ArrowUpRight className="size-4" strokeWidth={1.25} />

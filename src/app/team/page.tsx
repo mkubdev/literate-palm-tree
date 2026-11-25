@@ -1,7 +1,8 @@
 import { ArrowUpRight } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
-import { bio, photos, promises } from "@/content/salon";
+import { bio, promises } from "@/content/salon";
+import { getPhotos } from "@/sanity/content";
 import { booking, fr, SiteFooter, SiteHeader } from "@/components/site";
 
 export const metadata: Metadata = {
@@ -11,7 +12,8 @@ export const metadata: Metadata = {
     "Coiffeur, coloriste et visagiste formé à Valence et à Paris, Simon Bouvatier vous reçoit seul dans son salon du 75 rue Pierre Corneille, Lyon 6e.",
 };
 
-export default function Team() {
+export default async function Team() {
+  const { simon } = await getPhotos();
   return (
     <>
       <SiteHeader current="/team" />
@@ -42,12 +44,13 @@ export default function Team() {
           </div>
           <figure className="unveil relative aspect-[4/3] overflow-hidden lg:col-span-7 lg:self-start">
             <Image
-              src={photos.atWork.src}
-              alt={photos.atWork.alt}
+              src={simon.src}
+              alt={simon.alt}
               fill
               priority
               sizes="(min-width: 1024px) 56vw, 100vw"
               className="object-cover"
+              style={{ objectPosition: simon.position }}
             />
           </figure>
         </section>

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Italiana, Jost } from "next/font/google";
-import { hours, SITE_URL, salon, services } from "@/content/salon";
+import { hours, SITE_URL, salon } from "@/content/salon";
+import { getPhotos, getServices } from "@/sanity/content";
 import "./globals.css";
 import "./site.css";
 
@@ -49,65 +50,70 @@ const days = [
 ];
 
 /** Fiche « salon de coiffure » lue par Google (schema.org) */
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "HairSalon",
-  "@id": `${SITE_URL}/#salon`,
-  name: salon.name,
-  description: "Coiffeur, coloriste et visagiste à Lyon 6e.",
-  url: SITE_URL,
-  telephone: "+33478414299",
-  email: salon.email,
-  image: `${SITE_URL}/images/facade.jpg`,
-  logo: `${SITE_URL}/brand/logo.svg`,
-  priceRange: "€€",
-  currenciesAccepted: "EUR",
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: "75 rue Pierre Corneille",
-    postalCode: salon.address.zip,
-    addressLocality: salon.address.city,
-    addressCountry: "FR",
-  },
-  geo: {
-    "@type": "GeoCoordinates",
-    latitude: salon.address.lat,
-    longitude: salon.address.lng,
-  },
-  openingHoursSpecification: hours.flatMap((h, i) =>
-    h.open
-      ? [
-          {
-            "@type": "OpeningHoursSpecification",
-            dayOfWeek: `https://schema.org/${days[i]}`,
-            opens: pad(h.open[0]),
-            closes: pad(h.open[1]),
-          },
-        ]
-      : [],
-  ),
-  sameAs: [salon.instagram, salon.facebook, salon.bookingUrl],
-  potentialAction: {
-    "@type": "ReserveAction",
-    target: salon.bookingUrl,
-  },
-  hasOfferCatalog: {
-    "@type": "OfferCatalog",
-    name: "Carte des services",
-    itemListElement: services.map((c) => ({
+async function salonJsonLd() {
+  const [services, photos] = await Promise.all([getServices(), getPhotos()]);
+  return {
+    "@context": "https://schema.org",
+    "@type": "HairSalon",
+    "@id": `${SITE_URL}/#salon`,
+    name: salon.name,
+    description: "Coiffeur, coloriste et visagiste à Lyon 6e.",
+    url: SITE_URL,
+    telephone: "+33478414299",
+    email: salon.email,
+    image: photos.hero.src.startsWith("http")
+      ? photos.hero.src
+      : `${SITE_URL}${photos.hero.src}`,
+    logo: `${SITE_URL}/brand/logo.svg`,
+    priceRange: "€€",
+    currenciesAccepted: "EUR",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "75 rue Pierre Corneille",
+      postalCode: salon.address.zip,
+      addressLocality: salon.address.city,
+      addressCountry: "FR",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: salon.address.lat,
+      longitude: salon.address.lng,
+    },
+    openingHoursSpecification: hours.flatMap((h, i) =>
+      h.open
+        ? [
+            {
+              "@type": "OpeningHoursSpecification",
+              dayOfWeek: `https://schema.org/${days[i]}`,
+              opens: pad(h.open[0]),
+              closes: pad(h.open[1]),
+            },
+          ]
+        : [],
+    ),
+    sameAs: [salon.instagram, salon.facebook, salon.bookingUrl],
+    potentialAction: {
+      "@type": "ReserveAction",
+      target: salon.bookingUrl,
+    },
+    hasOfferCatalog: {
       "@type": "OfferCatalog",
-      name: c.name,
-      itemListElement: c.services.map((s) => ({
-        "@type": "Offer",
-        itemOffered: { "@type": "Service", name: s.name },
-        price: s.price.match(/\d+/)?.[0],
-        priceCurrency: "EUR",
+      name: "Carte des services",
+      itemListElement: services.map((c) => ({
+        "@type": "OfferCatalog",
+        name: c.name,
+        itemListElement: c.services.map((s) => ({
+          "@type": "Offer",
+          itemOffered: { "@type": "Service", name: s.name },
+          price: s.price.match(/\d+/)?.[0],
+          priceCurrency: "EUR",
+        })),
       })),
-    })),
-  },
-};
+    },
+  };
+}
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
@@ -116,7 +122,9 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           // biome-ignore lint/security/noDangerouslySetInnerHtml: données structurées statiques, sans saisie utilisateur
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(await salonJsonLd()),
+          }}
         />
         {children}
       </body>

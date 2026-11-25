@@ -12,12 +12,13 @@
 - SEO : titres et descriptions par page, URL canoniques, `sitemap.xml`, `robots.txt`, fiche schema.org `HairSalon` (adresse, horaires, prix, réservation), image de partage, favicon et icône iPhone.
 - Mentions légales (KALAME SAS) et confidentialité : aucun cookie, aucune collecte, donc pas de bandeau cookies.
 - Anciennes versions (V3 à V6, sélecteur) archivées dans `_archive/`, hors du build.
+- **Sanity (projet `8b9euu7b`, dataset `production`)** : carte des prestations et photos du site modifiables par Simon. Studio dans `studio/`, contenu importé (7 catégories, 46 prestations, 8 photos dont les 2 de l'ancien site Wavy). Le site relit Sanity au plus toutes les 60 s et retombe sur `src/content/salon.ts` si Sanity ne répond pas.
 
 ## Mise en ligne
 
 - [ ] Déployer sur Vercel et ajouter le domaine `simonbouvatier.fr` + `www.simonbouvatier.fr` (le `www` en principal, l'apex redirige).
 - [ ] DNS chez OVH : reporter les enregistrements indiqués par Vercel (A sur l'apex, CNAME sur `www`), supprimer les anciens enregistrements Wavy en conflit.
-- [ ] Rapatrier les 2 photos encore hébergées chez Wavy/Cloudinary avant de couper Wavy : Simon au travail (`photos.atWork`, page Simon) et la rose sous cloche (`photos.salon`, page Photos). Puis retirer `res.cloudinary.com` de `next.config.ts`.
+- [x] Photos encore hébergées chez Wavy : importées dans Sanity. `res.cloudinary.com` ne sert plus que de secours dans `next.config.ts`, à retirer après la résiliation de Wavy.
 - [ ] Résilier Wavy une fois le nouveau site en ligne et vérifié.
 - [ ] Google Search Console : valider le domaine et soumettre `https://www.simonbouvatier.fr/sitemap.xml`.
 
@@ -40,7 +41,9 @@
 
 ## Plus tard
 
-- [ ] **Sanity** : prix, horaires, fermetures exceptionnelles, photos, avis, éditables par Simon. Les données sont déjà regroupées dans `src/content/salon.ts`, à migrer telles quelles.
+- [ ] **Studio en ligne** : `cd studio && npx sanity deploy` (adresse prévue : simon-bouvatier.sanity.studio), puis inviter Simon comme Editor sur sanity.io/manage.
+- [ ] **Sanity, étape 2** : horaires, fermetures exceptionnelles, avis, textes. Les données sont dans `src/content/salon.ts`.
+- [ ] Mise à jour instantanée (au lieu de 60 s) : webhook Sanity vers une route `/api/revalidate` qui appelle `revalidateTag("sanity")`.
 - [ ] **Fermetures exceptionnelles** : bandeau « Fermé du … au … » ; sans ça le statut « Ouvert · ferme à 19h » est faux pendant les vacances.
 - [ ] **Instagram** : flux Behold. Envoyer à Simon le lien d'autorisation Behold (son compte doit être professionnel), puis renseigner `INSTAGRAM_FEED_URL`. Le code est prêt (`src/lib/instagram.ts`).
 - [ ] **Avis Google** : abandonné (l'API Places impose un compte Google Cloud avec carte). Alternative : recopier quelques avis à la main.

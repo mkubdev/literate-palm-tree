@@ -1,7 +1,8 @@
 import { ArrowRight, ArrowUpRight, Phone } from "lucide-react";
 import { LogoMark } from "@/components/logo";
 import { OpenStatus, TodayMark } from "@/components/open-status";
-import { hours, type Service, salon, services } from "@/content/salon";
+import { hours, type Service, salon } from "@/content/salon";
+import { getServices } from "@/sanity/content";
 
 /** Réservation : page Planity du salon, dans un nouvel onglet */
 export const booking = {
@@ -39,7 +40,7 @@ export function Logo({
 export function SiteHeader({ current }: { current?: string }) {
   return (
     <header className="sticky top-0 z-40 border-b border-(--line) bg-(--white)">
-      <div className="mx-auto grid max-w-[86rem] grid-cols-[1fr_auto_1fr] items-center gap-4 px-5 py-4 sm:gap-6 sm:px-10 sm:py-5">
+      <div className="mx-auto grid max-w-[86rem] grid-cols-[auto_1fr_auto] items-center gap-3 px-5 py-4 sm:gap-6 lg:grid-cols-[1fr_auto_1fr] sm:px-10 sm:py-5">
         <nav aria-label="Pages" className="label hidden gap-8 lg:flex">
           {pages.map((p) => (
             <a
@@ -92,8 +93,8 @@ export function SiteHeader({ current }: { current?: string }) {
             </a>
           </nav>
         </details>
-        <a href="/" className="col-start-2">
-          <Logo className="w-32 sm:w-52" />
+        <a href="/" className="tap col-start-2 justify-self-center">
+          <Logo className="w-28 min-[400px]:w-32 sm:w-52" />
         </a>
         <div className="col-start-3 flex items-center justify-end gap-8">
           <a
@@ -170,7 +171,8 @@ function Price({ s, label }: { s: Service; label: string }) {
  * Carte complète des prestations, en tableaux : une ligne par prestation,
  * une colonne par longueur. Chaque prix réserve en ligne ou appelle le salon.
  */
-export function PriceList({ className = "" }: { className?: string }) {
+export async function PriceList({ className = "" }: { className?: string }) {
+  const services = await getServices();
   return (
     <div className={`gap-14 lg:columns-2 ${className}`}>
       {services.map((c) => {
@@ -179,7 +181,8 @@ export function PriceList({ className = "" }: { className?: string }) {
         return (
           <table
             key={c.id}
-            className="prices mb-14 w-full break-inside-avoid border-collapse"
+            id={c.id}
+            className="prices mb-14 w-full scroll-mt-28 break-inside-avoid border-collapse"
           >
             <caption className="display border-b border-(--espresso) pb-3 text-left text-2xl">
               {c.name}
@@ -223,7 +226,7 @@ export function PriceList({ className = "" }: { className?: string }) {
                         {phoneOnly ? (
                           <>
                             {" · "}
-                            <a href={salon.phoneHref} className="link">
+                            <a href={salon.phoneHref} className="link tap">
                               par téléphone
                             </a>
                           </>
@@ -258,6 +261,47 @@ export function PriceList({ className = "" }: { className?: string }) {
           </table>
         );
       })}
+    </div>
+  );
+}
+
+/** « dès 29 € » : le plus petit prix d'une catégorie */
+function fromPrice(list: Service[]) {
+  const min = Math.min(
+    ...list.map((s) => Number(s.price.match(/\d+/)?.[0] ?? Infinity)),
+  );
+  return `dès ${min} €`;
+}
+
+/** Version courte de la carte pour l'accueil sur mobile : une ligne par catégorie */
+export async function PriceSummary({ className = "" }: { className?: string }) {
+  const services = await getServices();
+  return (
+    <div className={className}>
+      <ul className="border-t border-(--espresso)">
+        {services.map((c) => (
+          <li key={c.id} className="border-b border-(--line)">
+            <a
+              href={`/services#${c.id}`}
+              className="flex items-baseline justify-between gap-6 py-5"
+            >
+              <span className="display text-2xl">{c.name}</span>
+              <span className="flex shrink-0 items-center gap-3 text-(--taupe) tabular-nums">
+                {fromPrice(c.services)}
+                <ArrowRight
+                  aria-hidden
+                  className="size-3.5 text-(--gold)"
+                  strokeWidth={1.25}
+                />
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <a href="/services" className="btn btn-ghost mt-10">
+        Voir la carte complète{" "}
+        <ArrowRight className="size-4" strokeWidth={1.25} />
+      </a>
     </div>
   );
 }
@@ -327,7 +371,7 @@ export function ContactBlock({ heading = "h2" }: { heading?: "h1" | "h2" }) {
               </a>
               <a
                 href={`mailto:${salon.email}`}
-                className="link mt-2 block w-fit text-sm text-(--taupe)"
+                className="link tap mt-2 block w-fit text-sm text-(--taupe)"
               >
                 {salon.email}
               </a>
@@ -395,7 +439,7 @@ export function SiteFooter() {
           className="flex flex-col gap-3 md:col-span-3"
         >
           {[{ href: "/", label: "Accueil" }, ...pages].map((p) => (
-            <a key={p.href} href={p.href} className="link w-fit">
+            <a key={p.href} href={p.href} className="link tap w-fit">
               {p.label}
             </a>
           ))}
@@ -410,7 +454,7 @@ export function SiteFooter() {
             href={salon.instagram}
             target="_blank"
             rel="noopener"
-            className="link mt-3 w-fit"
+            className="link tap mt-3 w-fit"
           >
             Instagram
           </a>
@@ -418,7 +462,7 @@ export function SiteFooter() {
             href={salon.facebook}
             target="_blank"
             rel="noopener"
-            className="link w-fit"
+            className="link tap w-fit"
           >
             Facebook
           </a>
@@ -433,11 +477,11 @@ export function SiteFooter() {
             href={salon.bookingUrl}
             target="_blank"
             rel="noopener"
-            className="link"
+            className="link tap"
           >
             Réservation en ligne avec Planity
           </a>
-          <a href="/mentions-legales" className="link">
+          <a href="/mentions-legales" className="link tap">
             Mentions légales
           </a>
         </div>

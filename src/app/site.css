@@ -260,3 +260,21 @@ html:has(.site) {
   background-size: 100% 1px;
   background-position-x: 0;
 }
+
+/* Zone tactile élargie sans bouger la mise en page ni le soulignement */
+.site .tap {
+  position: relative;
+}
+.site .tap::after {
+  content: "";
+  position: absolute;
+  inset: -0.6rem -0.3rem;
+}
+
+/* Petits écrans : le bouton de l'en-tête se resserre */
+@media (max-width: 399px) {
+  .site .btn-sm {
+    padding: 0.7rem 0.9rem;
+    letter-spacing: 0.16em;
+  }
+}

@@ -1,19 +1,24 @@
 import { ArrowUpRight, Star } from "lucide-react";
 import Image from "next/image";
 import { OpenStatus } from "@/components/open-status";
-import { promises, reviews, salon, salonPhotos } from "@/content/salon";
+import { promises, reviews, salon } from "@/content/salon";
 import { getInstagramPosts } from "@/lib/instagram";
+import { getPhotos } from "@/sanity/content";
 import {
   booking,
   ContactBlock,
   fr,
   PriceList,
+  PriceSummary,
   SiteFooter,
   SiteHeader,
 } from "@/components/site";
 
 export default async function V7() {
-  const posts = await getInstagramPosts(6);
+  const [posts, photos] = await Promise.all([
+    getInstagramPosts(6),
+    getPhotos(),
+  ]);
 
   return (
     <>
@@ -63,12 +68,13 @@ export default async function V7() {
           </div>
           <figure className="unveil relative aspect-[4/5] overflow-hidden lg:col-span-7 lg:aspect-auto lg:min-h-[44rem]">
             <Image
-              src={salonPhotos.facade.src}
-              alt={salonPhotos.facade.alt}
+              src={photos.hero.src}
+              alt={photos.hero.alt}
               fill
               priority
               sizes="(min-width: 1024px) 56vw, 100vw"
-              className="object-cover object-[50%_20%]"
+              className="object-cover"
+              style={{ objectPosition: photos.hero.position ?? "50% 20%" }}
             />
           </figure>
         </section>
@@ -87,33 +93,29 @@ export default async function V7() {
               </p>
             </div>
             <div className="mt-16 grid gap-4 sm:gap-6 lg:grid-cols-12">
-              <div className="drift relative aspect-[3/2] overflow-hidden lg:col-span-8 lg:row-span-2 lg:aspect-auto">
-                <Image
-                  src={salonPhotos.allee.src}
-                  alt={salonPhotos.allee.alt}
-                  fill
-                  sizes="(min-width: 1024px) 60vw, 100vw"
-                  className="object-cover"
-                />
-              </div>
-              <div className="drift relative aspect-[3/2] overflow-hidden lg:col-span-4">
-                <Image
-                  src={salonPhotos.postes.src}
-                  alt={salonPhotos.postes.alt}
-                  fill
-                  sizes="(min-width: 1024px) 30vw, 100vw"
-                  className="object-cover"
-                />
-              </div>
-              <div className="drift relative aspect-[3/2] overflow-hidden lg:col-span-4">
-                <Image
-                  src={salonPhotos.bacs.src}
-                  alt={salonPhotos.bacs.alt}
-                  fill
-                  sizes="(min-width: 1024px) 30vw, 100vw"
-                  className="object-cover"
-                />
-              </div>
+              {photos.salon.slice(0, 3).map((p, i) => (
+                <div
+                  key={`${i}-${p.src}`}
+                  className={`drift relative aspect-[3/2] overflow-hidden ${
+                    i === 0
+                      ? "lg:col-span-8 lg:row-span-2 lg:aspect-auto"
+                      : "lg:col-span-4"
+                  }`}
+                >
+                  <Image
+                    src={p.src}
+                    alt={p.alt}
+                    fill
+                    sizes={
+                      i === 0
+                        ? "(min-width: 1024px) 60vw, 100vw"
+                        : "(min-width: 1024px) 30vw, 100vw"
+                    }
+                    className="object-cover"
+                    style={{ objectPosition: p.position }}
+                  />
+                </div>
+              ))}
             </div>
             <ul className="mt-16 grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:grid-cols-5">
               {promises.map((p) => (
@@ -154,7 +156,8 @@ export default async function V7() {
               </a>
             </div>
           </div>
-          <PriceList className="mt-16" />
+          <PriceSummary className="mt-12 md:hidden" />
+          <PriceList className="mt-16 hidden md:block" />
         </section>
 
         <section id="avis" className="scroll-mt-20 border-y border-(--line)">
@@ -220,7 +223,7 @@ export default async function V7() {
               href={salon.instagram}
               target="_blank"
               rel="noopener"
-              className="label link flex items-center gap-2"
+              className="label link tap flex items-center gap-2"
             >
               {salon.instagramHandle}{" "}
               <ArrowUpRight className="size-4" strokeWidth={1.5} />
@@ -249,15 +252,8 @@ export default async function V7() {
                     </a>
                   </li>
                 ))
-              : [
-                  salonPhotos.produits,
-                  salonPhotos.vitrine,
-                  salonPhotos.postes,
-                  salonPhotos.allee,
-                  salonPhotos.bacs,
-                  salonPhotos.facade,
-                ].map((p) => (
-                  <li key={p.src}>
+              : photos.gallery.slice(0, 6).map((p, i) => (
+                  <li key={`${i}-${p.src}`}>
                     <a
                       href={salon.instagram}
                       target="_blank"
@@ -270,6 +266,7 @@ export default async function V7() {
                         fill
                         sizes="(min-width: 1024px) 15vw, 50vw"
                         className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        style={{ objectPosition: p.position }}
                       />
                     </a>
                   </li>

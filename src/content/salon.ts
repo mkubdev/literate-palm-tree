@@ -1,4 +1,6 @@
-// Source : fiche Planity, novembre 2026 (liste complète, « voir plus » dépliés). À migrer dans Sanity une fois la DA choisie.
+// Source : fiche Planity, novembre 2026 (liste complète, « voir plus » dépliés).
+// Prestations et photos : la référence est désormais Sanity (src/sanity/content.ts) ;
+// ces valeurs servent de secours si Sanity ne répond pas. À migrer dans Sanity une fois la DA choisie.
 
 export type Service = {
   name: string;
