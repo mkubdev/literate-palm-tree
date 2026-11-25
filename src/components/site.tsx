@@ -2,6 +2,7 @@ import { ArrowRight, ArrowUpRight, Phone } from "lucide-react";
 import { LogoMark } from "@/components/logo";
 import { OpenStatus, TodayMark } from "@/components/open-status";
 import { type Service, salon } from "@/content/salon";
+import { closureNotice, closureRange, parisNow } from "@/lib/opening";
 import { getHome, getInfo, getServices, type Info } from "@/sanity/content";
 
 /** Réservation : page Planity du salon, dans un nouvel onglet */
@@ -60,79 +61,100 @@ export function Logo({
   );
 }
 
-export async function SiteHeader({ current }: { current?: string }) {
-  const { phone, phoneHref } = await getInfo();
+/** Bandeau de fermeture exceptionnelle : 3 semaines avant, puis pendant */
+function ClosureBanner({ info }: { info: Info }) {
+  const notice = closureNotice(info.closures, info.hours, new Date());
+  if (!notice) return null;
   return (
-    <header className="sticky top-0 z-40 border-b border-(--line) bg-(--white)">
-      <div className="mx-auto grid max-w-[86rem] grid-cols-[auto_1fr_auto] items-center gap-3 px-5 py-4 sm:gap-6 lg:grid-cols-[1fr_auto_1fr] sm:px-10 sm:py-5">
-        <nav aria-label="Pages" className="label hidden gap-8 lg:flex">
-          {pages.map((p) => (
-            <a
-              key={p.href}
-              href={p.href}
-              aria-current={current === p.href ? "page" : undefined}
-              className="link"
+    <output
+      className="closure block border-b border-(--line) bg-(--veil) px-5 py-2.5 text-center text-sm sm:px-10"
+      data-current={notice.current || undefined}
+    >
+      {fr(notice.text)}
+      {notice.reason ? (
+        <span className="text-(--taupe)"> · {fr(notice.reason)}</span>
+      ) : null}
+    </output>
+  );
+}
+
+export async function SiteHeader({ current }: { current?: string }) {
+  const info = await getInfo();
+  const { phone, phoneHref } = info;
+  return (
+    <>
+      <ClosureBanner info={info} />
+      <header className="sticky top-0 z-40 border-b border-(--line) bg-(--white)">
+        <div className="mx-auto grid max-w-[86rem] grid-cols-[auto_1fr_auto] items-center gap-3 px-5 py-4 sm:gap-6 lg:grid-cols-[1fr_auto_1fr] sm:px-10 sm:py-5">
+          <nav aria-label="Pages" className="label hidden gap-8 lg:flex">
+            {pages.map((p) => (
+              <a
+                key={p.href}
+                href={p.href}
+                aria-current={current === p.href ? "page" : undefined}
+                className="link"
+              >
+                {p.label}
+              </a>
+            ))}
+          </nav>
+          <details className="menu lg:hidden">
+            <summary className="label flex cursor-pointer list-none items-center gap-2 py-2">
+              <span className="menu-icon" aria-hidden />
+              Menu
+            </summary>
+            <nav
+              aria-label="Pages"
+              className="absolute inset-x-0 top-full border-b border-(--line) bg-(--white) px-5 pt-4 pb-8 sm:px-10"
             >
-              {p.label}
-            </a>
-          ))}
-        </nav>
-        <details className="menu lg:hidden">
-          <summary className="label flex cursor-pointer list-none items-center gap-2 py-2">
-            <span className="menu-icon" aria-hidden />
-            Menu
-          </summary>
-          <nav
-            aria-label="Pages"
-            className="absolute inset-x-0 top-full border-b border-(--line) bg-(--white) px-5 pt-4 pb-8 sm:px-10"
-          >
-            <ul>
-              {[{ href: "/", label: "Accueil" }, ...pages].map((p) => (
-                <li key={p.href} className="border-b border-(--line)">
-                  <a
-                    href={p.href}
-                    aria-current={current === p.href ? "page" : undefined}
-                    className="display flex items-center justify-between py-4 text-3xl"
-                  >
-                    {p.label}
-                    <ArrowRight
-                      aria-hidden
-                      className="size-4 text-(--gold)"
-                      strokeWidth={1.25}
-                    />
-                  </a>
-                </li>
-              ))}
-            </ul>
+              <ul>
+                {[{ href: "/", label: "Accueil" }, ...pages].map((p) => (
+                  <li key={p.href} className="border-b border-(--line)">
+                    <a
+                      href={p.href}
+                      aria-current={current === p.href ? "page" : undefined}
+                      className="display flex items-center justify-between py-4 text-3xl"
+                    >
+                      {p.label}
+                      <ArrowRight
+                        aria-hidden
+                        className="size-4 text-(--gold)"
+                        strokeWidth={1.25}
+                      />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <a
+                href={phoneHref}
+                className="mt-6 inline-flex items-center gap-3 text-lg tabular-nums"
+              >
+                <Phone
+                  aria-hidden
+                  className="size-4 text-(--gold)"
+                  strokeWidth={1.25}
+                />
+                {phone}
+              </a>
+            </nav>
+          </details>
+          <a href="/" className="tap col-start-2 justify-self-center">
+            <Logo className="w-28 min-[400px]:w-32 sm:w-52" />
+          </a>
+          <div className="col-start-3 flex items-center justify-end gap-8">
             <a
               href={phoneHref}
-              className="mt-6 inline-flex items-center gap-3 text-lg tabular-nums"
+              className="label link hidden tabular-nums md:inline"
             >
-              <Phone
-                aria-hidden
-                className="size-4 text-(--gold)"
-                strokeWidth={1.25}
-              />
               {phone}
             </a>
-          </nav>
-        </details>
-        <a href="/" className="tap col-start-2 justify-self-center">
-          <Logo className="w-28 min-[400px]:w-32 sm:w-52" />
-        </a>
-        <div className="col-start-3 flex items-center justify-end gap-8">
-          <a
-            href={phoneHref}
-            className="label link hidden tabular-nums md:inline"
-          >
-            {phone}
-          </a>
-          <a {...booking} className="btn btn-sm">
-            Réserver
-          </a>
+            <a {...booking} className="btn btn-sm">
+              Réserver
+            </a>
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+    </>
   );
 }
 
@@ -391,6 +413,7 @@ export async function ContactBlock({
 }) {
   const H = heading;
   const info = await getInfo();
+  const today = parisNow(new Date()).date;
   return (
     <div className="grid gap-10 lg:grid-cols-12 lg:gap-0">
       <div className="lg:col-span-5 lg:pr-16">
@@ -429,12 +452,20 @@ export async function ContactBlock({
             <dt className="label pt-1 text-(--taupe)">Horaires</dt>
             <dd>
               <p>
-                <OpenStatus hours={info.hours} fallback={info.hoursSummary} />
+                <OpenStatus
+                  hours={info.hours}
+                  closures={info.closures}
+                  fallback={info.hoursSummary}
+                />
               </p>
               <ul className="hours mt-4 text-sm">
                 {info.hours.map((h, i) => (
                   <li key={h.day} className="flex justify-between py-1">
-                    <TodayMark index={i} hours={info.hours}>
+                    <TodayMark
+                      index={i}
+                      hours={info.hours}
+                      closures={info.closures}
+                    >
                       {h.day}
                     </TodayMark>
                     <span
@@ -445,6 +476,27 @@ export async function ContactBlock({
                   </li>
                 ))}
               </ul>
+              {info.closures.length ? (
+                <ul className="mt-4 space-y-1 border-t border-(--line) pt-4 text-sm">
+                  {info.closures.slice(0, 3).map((c) => (
+                    <li key={c.from} className="flex gap-2">
+                      <span
+                        aria-hidden
+                        className="mt-2 size-1 shrink-0 rounded-full bg-(--gold)"
+                      />
+                      <span>
+                        Fermeture exceptionnelle {closureRange(c, today)}
+                        {c.reason ? (
+                          <span className="text-(--taupe)">
+                            {" "}
+                            · {fr(c.reason)}
+                          </span>
+                        ) : null}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
             </dd>
           </div>
         </dl>

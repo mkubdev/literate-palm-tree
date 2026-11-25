@@ -278,3 +278,15 @@ html:has(.site) {
     letter-spacing: 0.16em;
   }
 }
+
+/* Bandeau de fermeture : pastille or quand le salon est fermé en ce moment */
+.site .closure[data-current]::before {
+  content: "";
+  display: inline-block;
+  width: 0.4rem;
+  height: 0.4rem;
+  margin-right: 0.6rem;
+  vertical-align: 0.12em;
+  border-radius: 50%;
+  background: var(--gold);
+}

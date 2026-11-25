@@ -1,5 +1,5 @@
 import { PinIcon } from "@sanity/icons/Pin";
-import { defineField, defineType } from "sanity";
+import { defineArrayMember, defineField, defineType } from "sanity";
 
 const DAYS = [
   ["monday", "Lundi"],
@@ -24,6 +24,7 @@ export const contactPage = defineType({
   groups: [
     { name: "contact", title: "Coordonnées", default: true },
     { name: "hours", title: "Horaires" },
+    { name: "closures", title: "Fermetures" },
     { name: "map", title: "Plan" },
   ],
   fields: [
@@ -97,6 +98,65 @@ export const contactPage = defineType({
         validation: (rule) => rule.required(),
       }),
     ),
+    defineField({
+      name: "closures",
+      title: "Fermetures exceptionnelles",
+      type: "array",
+      group: "closures",
+      description:
+        "Congés, jours fériés… Un bandeau apparaît sur tout le site 3 semaines avant et pendant la fermeture, et le statut « Ouvert » passe à « Fermé · réouverture le … ». Les fermetures passées peuvent être supprimées.",
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "closure",
+          title: "Fermeture",
+          fields: [
+            defineField({
+              name: "from",
+              title: "Premier jour fermé",
+              type: "date",
+              options: { dateFormat: "DD/MM/YYYY" },
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "to",
+              title: "Dernier jour fermé",
+              type: "date",
+              options: { dateFormat: "DD/MM/YYYY" },
+              description:
+                "Le même jour que le premier pour une seule journée.",
+              validation: (rule) =>
+                rule.required().custom((to, ctx) => {
+                  const from = (ctx.parent as { from?: string })?.from;
+                  return from && to && to < from
+                    ? "Le dernier jour doit être après le premier"
+                    : true;
+                }),
+            }),
+            defineField({
+              name: "reason",
+              title: "Motif (facultatif)",
+              type: "string",
+              description:
+                "Par exemple « Congés d’été ». Affiché dans le bandeau.",
+              validation: (rule) => rule.max(60),
+            }),
+          ],
+          preview: {
+            select: { from: "from", to: "to", reason: "reason" },
+            prepare: ({ from, to, reason }) => {
+              const f = (d?: string) =>
+                d ? d.split("-").reverse().join("/") : "?";
+              return {
+                title:
+                  from === to ? `Le ${f(from)}` : `Du ${f(from)} au ${f(to)}`,
+                subtitle: reason,
+              };
+            },
+          },
+        }),
+      ],
+    }),
     defineField({
       name: "lat",
       title: "Latitude",

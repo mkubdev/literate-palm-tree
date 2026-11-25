@@ -11,7 +11,13 @@ import {
   salon,
   salonPhotos,
 } from "@/content/salon";
-import { fmt, type Hours, hoursSummary } from "@/lib/opening";
+import {
+  type Closure,
+  fmt,
+  type Hours,
+  hoursSummary,
+  parisNow,
+} from "@/lib/opening";
 import { client, urlFor } from "./client";
 
 /** Contenu modifiable par Simon dans le Studio, relu au plus toutes les 60 s */
@@ -228,6 +234,7 @@ export const getInfo = cache(async () => {
       email?: string;
       lat?: number;
       lng?: number;
+      closures?: Partial<Closure>[];
     } & Partial<Record<(typeof DAYS)[number], Day>>
   >(`*[_id == "contactPage"][0]`);
   const a = salon.address;
@@ -246,6 +253,20 @@ export const getInfo = cache(async () => {
       : h;
   });
 
+  // Fermetures valides, en cours ou à venir, dans l'ordre
+  const today = parisNow(new Date()).date;
+  const closures: Closure[] = (d?.closures ?? [])
+    .filter(
+      (c): c is Closure =>
+        !!c.from && !!c.to && c.from <= c.to && c.to >= today,
+    )
+    .map((c) => ({
+      from: c.from,
+      to: c.to,
+      reason: c.reason?.trim() || undefined,
+    }))
+    .sort((a, b) => a.from.localeCompare(b.from));
+
   const phone = text(d?.phone, salon.phone ?? "");
   const lat = d?.lat ?? a.lat;
   const lng = d?.lng ?? a.lng;
@@ -263,6 +284,7 @@ export const getInfo = cache(async () => {
     lng,
     mapsUrl: `https://www.google.com/maps?daddr=${lat},${lng}`,
     hours,
+    closures,
     hoursSummary: hoursSummary(hours),
     /** « 9h – 19h » ou « Fermé », pour le tableau des horaires */
     slot: (h: Hours[number]) =>

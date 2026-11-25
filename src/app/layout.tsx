@@ -94,6 +94,14 @@ async function salonJsonLd() {
           ]
         : [],
     ),
+    // Fermetures exceptionnelles : opens = closes = 00:00 signifie « fermé » pour Google
+    specialOpeningHoursSpecification: info.closures.map((c) => ({
+      "@type": "OpeningHoursSpecification",
+      opens: "00:00",
+      closes: "00:00",
+      validFrom: c.from,
+      validThrough: c.to,
+    })),
     sameAs: [salon.instagram, salon.facebook, salon.bookingUrl],
     potentialAction: {
       "@type": "ReserveAction",

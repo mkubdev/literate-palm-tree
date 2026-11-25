@@ -59,6 +59,7 @@ export default async function Home() {
                   <dd className="mt-2">
                     <OpenStatus
                       hours={info.hours}
+                      closures={info.closures}
                       fallback={info.hoursSummary}
                     />
                   </dd>

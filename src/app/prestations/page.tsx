@@ -7,7 +7,6 @@ import {
   SiteFooter,
   SiteHeader,
 } from "@/components/site";
-import { salon } from "@/content/salon";
 import { pageMeta } from "@/lib/seo";
 import { getInfo } from "@/sanity/content";
 

@@ -43,7 +43,8 @@
 
 - [ ] **Studio en ligne** : `cd studio && npx sanity deploy` (adresse prévue : simon-bouvatier.sanity.studio), puis inviter Simon comme Editor sur sanity.io/manage.
 - [x] Sanity : pages Accueil, Simon, Photos et Contact (coordonnées et horaires utilisés sur tout le site, y compris la fiche Google).
-- [ ] **Sanity, étape 3** : fermetures exceptionnelles (bandeau + statut « Fermé »), page Prestations (texte d'intro), mentions légales. Les données sont dans `src/content/salon.ts`.
+- [x] Fermetures exceptionnelles (Page Contact › Fermetures) : bandeau sur tout le site 3 semaines avant et pendant, statut « Fermé · réouverture le … », note dans le bloc Contact, fermetures déclarées à Google.
+- [ ] **Sanity, étape 3** : page Prestations (texte d'intro), mentions légales. Les données sont dans `src/content/salon.ts`.
 - [ ] Mise à jour instantanée (au lieu de 60 s) : webhook Sanity vers une route `/api/revalidate` qui appelle `revalidateTag("sanity")`.
 - [ ] **Instagram** : flux Behold. Envoyer à Simon le lien d'autorisation Behold (son compte doit être professionnel), puis renseigner `INSTAGRAM_FEED_URL`. Le code est prêt (`src/lib/instagram.ts`).
 - [ ] **Avis Google** : abandonné (l'API Places impose un compte Google Cloud avec carte). Alternative : recopier quelques avis à la main.
